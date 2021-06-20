@@ -25,7 +25,7 @@ pyright --help
 or
 
 ```bash
-python3 -m pyright
+python3 -m pyright --help
 ```
 
 Pyright for Python should work exactly the same as pyright does, see the [pyright documentation](https://github.com/microsoft/pyright/blob/main/docs/getting-started.md) for details on how to make use of pyright.
