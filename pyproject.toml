@@ -1,0 +1,16 @@
+[tool.black]
+skip-string-normalization = true
+
+
+[tool.pyright]
+include = [
+    "pyright"
+]
+pythonVersion = "3.9"
+
+typeCheckingMode = "strict"
+
+# enable these for now as none of raise any
+# errors anyway
+reportCallInDefaultInitializer = true
+reportImplicitStringConcatenation = true
