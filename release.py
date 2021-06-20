@@ -12,7 +12,7 @@ def run(*args: str) -> None:
 def main() -> None:
     run(sys.executable, 'setup.py', 'sdist')
     run(sys.executable, 'setup.py', 'sdist', 'bdist_wheel')
-    run('twine', 'upload', '-r', 'testpypi', 'dist/*')
+    run('twine', 'upload', 'dist/*')
 
 
 if __name__ == '__main__':
