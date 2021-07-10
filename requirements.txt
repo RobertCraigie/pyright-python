@@ -1,1 +1,2 @@
 nodeenv>=1.6.0
+typing-extensions>=3.7; python_version < '3.8'

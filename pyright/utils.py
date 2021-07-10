@@ -10,3 +10,11 @@ def get_env_dir() -> Path:
         return Path(env_dir)
 
     return Path(tempfile.gettempdir()) / 'pyright-prisma' / 'env'
+
+
+def env_to_bool(key: str, *, default: bool = False) -> bool:
+    value = os.environ.get(key)
+    if value is None:
+        return default
+
+    return value.lower() in {'1', 't', 'on', 'true'}

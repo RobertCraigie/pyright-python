@@ -35,13 +35,9 @@ Pyright for Python should work exactly the same as pyright does, see the [pyrigh
 [Pyright](https://github.com/microsoft/pyright) is written in TypeScript and requires node to be installed and is normally installed with npm, this could be a barrier for entry for some python developers as they may not have node or npm, installed on their machine, I wanted to make pyright as easy to install as any normal python package.
 
 
-## Implementation Notes
+## How Pyright for Python Works
 
-This project works by downloading node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then installing pyright, while this works, it is far from ideal.
-
-There are at least two options for fixing this problem, the first is to package a wheel for each platform containing a node binary, I do not know if we can get around installing pyright at runtime as `npm install` could have platform specific dependencies.
-
-The second option is to use [pkg](https://github.com/vercel/pkg) to create a pyright binary and package that in wheels.
+This project works by first checking if node is in the `PATH` and if it is not then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
 
 ## Configuration
 
@@ -54,6 +50,11 @@ Set `PYRIGHT_PYTHON_DEBUG` to any value.
 ### Modify Pyright Version
 
 Set `PYRIGHT_PYTHON_VERSION` to the desired version, e.g. `1.1.150`
+
+## Force Node Env
+
+Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on or true.
+e.g. `off`
 
 ### Modify Node Env Location
 
