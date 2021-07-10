@@ -28,4 +28,6 @@ _TARGETS = {'node', 'npm', 'npx'}
 def check_target(value: Any) -> None:
     """Raises a TypeError  if the value is not a valid Target."""
     if value not in _TARGETS:
-        raise TypeError(f'{value} is not a valid target, expected one of {", ".join(_TARGETS)}')
+        raise TypeError(
+            f'{value} is not a valid target, expected one of {", ".join(_TARGETS)}'
+        )
