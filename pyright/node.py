@@ -8,20 +8,16 @@ from typing import Dict, Optional, Any
 from pathlib import Path
 
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool
+from .utils import config
 
 
 log: logging.Logger = logging.getLogger(__name__)
-
-ENV_DIR: Path = get_env_dir()
-BINARIES_DIR: Path = ENV_DIR / 'bin'
-USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
 
 
 def _ensure_available(target: Target) -> Binary:
     """Ensure the target node executable is available"""
     path = None
-    if USE_GLOBAL_NODE:
+    if config.global_node:
         path = _get_global_binary(target)
 
     if path is not None:
@@ -33,17 +29,18 @@ def _ensure_available(target: Target) -> Binary:
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
-    if not ENV_DIR.exists():
-        log.debug('Environment not found at %s', ENV_DIR)
+    env_dir = config.env_dir
+    if not env_dir.exists():
+        log.debug('Environment not found at %s', env_dir)
         _install_node_env()
     else:
-        log.debug('Environment exists at %s', ENV_DIR)
+        log.debug('Environment exists at %s', env_dir)
 
     # Ensure the target binary exists.
     # This shouldn't really happen but there could
     # be cases where our env dir exists but without the
     # binary so we might as well just double check.
-    path = BINARIES_DIR.joinpath(target)
+    path = env_dir.joinpath('bin').joinpath(target)
     if not path.exists():
         _install_node_env()
 
@@ -71,8 +68,8 @@ def _get_global_binary(target: Target) -> Optional[Path]:
 
 
 def _install_node_env() -> None:
-    log.debug('Installing nodeenv to %s', ENV_DIR)
-    args = [sys.executable, '-m', 'nodeenv', str(ENV_DIR)]
+    log.debug('Installing nodeenv to %s', config.env_dir)
+    args = [sys.executable, '-m', 'nodeenv', str(config.env_dir)]
     log.debug('Running command with args: %s', args)
     subprocess.run(args, check=True)
 
@@ -106,7 +103,7 @@ def get_env_variables() -> Dict[str, Any]:
     # NOTE: I do not actually know if these result in the intended behaviour
     #       I simply copied them from bin/shim in nodeenv
     return {
-        'NODE_PATH': str(ENV_DIR / 'lib' / 'node_modules'),
-        'NPM_CONFIG_PREFIX': str(ENV_DIR),
-        'npm_config_prefix': str(ENV_DIR),
+        'NODE_PATH': str(config.env_dir / 'lib' / 'node_modules'),
+        'NPM_CONFIG_PREFIX': str(config.env_dir),
+        'npm_config_prefix': str(config.env_dir),
     }

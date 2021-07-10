@@ -1,2 +1,5 @@
 nodeenv>=1.6.0
+
+# TODO: version
+pydantic
 typing-extensions>=3.7; python_version < '3.8'

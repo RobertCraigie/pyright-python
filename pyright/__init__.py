@@ -7,10 +7,10 @@ __copyright__ = 'Copyright 2021 Robert Craigie'
 __version__ = '0.0.3'
 
 
-import os
+from .utils import env_to_bool
 
 
-if os.environ.get('PYRIGHT_PYTHON_DEBUG'):
+if env_to_bool('PYRIGHT_PYTHON_DEBUG', default=False):
     import logging
 
     logging.basicConfig(
