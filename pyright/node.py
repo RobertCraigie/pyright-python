@@ -83,13 +83,20 @@ def run(target: Target, *args: str) -> int:
     env = os.environ.copy()
 
     if binary.strategy == Strategy.NODEENV:
-        activate = binary.path.parent / 'activate'
-        node_args = [
-            'bash',
-            '-c',
-            f'. {pipes.quote(str(activate))} && {" ".join([target, *args])}',
-        ]
         env.update(get_env_variables())
+
+        if shutil.which('bash'):
+            activate = binary.path.parent / 'activate'
+            node_args = [
+                'bash',
+                '-c',
+                f'. {pipes.quote(str(activate))} && {" ".join([target, *args])}',
+            ]
+        else:
+            if not env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
+                print('WARNING: nodeenv usage without access to bash, this is untested behaviour.\n')
+
+            node_args = [str(binary.path), *args]
     elif binary.strategy == Strategy.GLOBAL:
         node_args = [str(binary.path), *args]
     else:

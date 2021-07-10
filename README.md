@@ -51,14 +51,22 @@ Set `PYRIGHT_PYTHON_DEBUG` to any value.
 
 Set `PYRIGHT_PYTHON_VERSION` to the desired version, e.g. `1.1.150`
 
-## Force Node Env
+### Force Node Env
 
 Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on or true.
 e.g. `off`
 
 ### Modify Node Env Location
 
-Set `PYRIGHT_PYTHON_ENV_DIR` to a valid  [nodeenv](https://github.com/ekalinin/nodeenv) directory. e.g. `~/.cache/nodeenv`
+Set `PYRIGHT_PYTHON_ENV_DIR` to a valid [nodeenv](https://github.com/ekalinin/nodeenv) directory. e.g. `~/.cache/nodeenv`
+
+### Ignore Warnings
+
+Set `PYRIGHT_PYTHON_IGNORE_WARNINGS` to a truthy value, e.g. 1, t, on or true.
+
+Pyright for Python will print warnings for the following case(s)
+
+- Using [nodeenv](https://github.com/ekalinin/nodeenv) without bash available
 
 ## Contributing
 
