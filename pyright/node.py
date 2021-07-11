@@ -4,7 +4,7 @@ import pipes
 import shutil
 import logging
 import subprocess
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Union, Any
 from pathlib import Path
 
 from .types import Binary, Target, Strategy, check_target
@@ -77,7 +77,9 @@ def _install_node_env() -> None:
     subprocess.run(args, check=True)
 
 
-def run(target: Target, *args: str) -> int:
+def run(
+    target: Target, *args: str, **kwargs: Any
+) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     check_target(target)
     binary = _ensure_available(target)
     env = os.environ.copy()
@@ -94,7 +96,9 @@ def run(target: Target, *args: str) -> int:
             ]
         else:
             if not env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
-                print('WARNING: nodeenv usage without access to bash, this is untested behaviour.\n')
+                print(
+                    'WARNING: nodeenv usage without access to bash, this is untested behaviour.\n'
+                )
 
             node_args = [str(binary.path), *args]
     elif binary.strategy == Strategy.GLOBAL:
@@ -103,9 +107,31 @@ def run(target: Target, *args: str) -> int:
         raise RuntimeError(f'Unknown strategy: {binary.strategy}')
 
     log.debug('Running node command with args: %s', node_args)
+    return subprocess.run(node_args, env=env, **kwargs)
 
-    proc = subprocess.run(node_args, env=env)
-    return proc.returncode
+
+def latest(package: str) -> str:
+    """Return the latest version for the given package"""
+    proc = run(
+        'npm',
+        'info',
+        package,
+        'version',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    if isinstance(proc.stdout, bytes):
+        stdout = proc.stdout.decode(sys.getdefaultencoding())
+    else:
+        stdout = proc.stdout
+
+    if proc.returncode != 0:
+        print(stdout, file=sys.stderr)
+        raise RuntimeError(f'Version check for {package} failed, see output above.')
+
+    latest = stdout.rstrip('\n')
+    log.debug('Version check for %s returning %s', package, latest)
+    return latest
 
 
 def get_env_variables() -> Dict[str, Any]:

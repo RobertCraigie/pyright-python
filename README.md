@@ -39,6 +39,8 @@ Pyright for Python should work exactly the same as pyright does, see the [pyrigh
 
 This project works by first checking if node is in the `PATH` and if it is not then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
 
+We also automatically upgrade the pyright npm package to it's latest version on every run, see below for how to change this behaviour.
+
 ## Configuration
 
 You can configure Pyright for Python using environment variables.
@@ -49,7 +51,7 @@ Set `PYRIGHT_PYTHON_DEBUG` to any value.
 
 ### Modify Pyright Version
 
-Set `PYRIGHT_PYTHON_VERSION` to the desired version, e.g. `1.1.150`
+Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`
 
 ### Force Node Env
 

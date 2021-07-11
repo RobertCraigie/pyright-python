@@ -7,11 +7,14 @@ from . import node
 
 
 log: logging.Logger = logging.getLogger(__name__)
-PYRIGHT_VERSION: str = os.environ.get('PYRIGHT_PYTHON_VERSION', '1.1.150')
 
 
 def main(args: List[str]) -> int:
-    return node.run('npx', '--yes', f'pyright@{PYRIGHT_VERSION}', *args)
+    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    if version is None:
+        version = node.latest('pyright')
+
+    return node.run('npx', '--yes', f'pyright@{version}', *args).returncode
 
 
 def entrypoint() -> NoReturn:
