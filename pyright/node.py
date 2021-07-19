@@ -4,7 +4,7 @@ import pipes
 import shutil
 import logging
 import subprocess
-from typing import Dict, Optional, Union, Any
+from typing import Dict, Tuple, Optional, Union, Any
 from pathlib import Path
 
 from .types import Binary, Target, Strategy, check_target
@@ -108,6 +108,18 @@ def run(
 
     log.debug('Running node command with args: %s', node_args)
     return subprocess.run(node_args, env=env, **kwargs)
+
+
+def version(target: Target) -> Tuple[int]:
+    proc = run(target, '--version', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if isinstance(proc.stdout, bytes):
+        output = proc.stdout.decode(sys.getdefaultencoding())
+    else:
+        output = proc.stdout
+
+    info = tuple(map(int, output.rstrip('\n').split('.')))
+    log.debug('Version check for %s returning %s', target, info)
+    return info
 
 
 def latest(package: str) -> str:

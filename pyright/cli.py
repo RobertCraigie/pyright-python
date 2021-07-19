@@ -14,7 +14,11 @@ def main(args: List[str]) -> int:
     if version is None:
         version = node.latest('pyright')
 
-    return node.run('npx', '--yes', f'pyright@{version}', *args).returncode
+    npx = node.version('npx')
+    if npx[0] >= 7:
+        return node.run('npx', '--yes', f'pyright@{version}', *args).returncode
+
+    return node.run('npx', f'pyright@{version}', *args).returncode
 
 
 def entrypoint() -> NoReturn:
