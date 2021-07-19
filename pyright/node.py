@@ -110,7 +110,7 @@ def run(
     return subprocess.run(node_args, env=env, **kwargs)
 
 
-def version(target: Target) -> Tuple[int]:
+def version(target: Target) -> Tuple[int, ...]:
     proc = run(target, '--version', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if isinstance(proc.stdout, bytes):
         output = proc.stdout.decode(sys.getdefaultencoding())
