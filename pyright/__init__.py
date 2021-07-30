@@ -8,6 +8,7 @@ __version__ = '0.0.5a'
 
 
 import os
+from .cli import *
 
 
 if os.environ.get('PYRIGHT_PYTHON_DEBUG'):

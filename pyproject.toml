@@ -10,6 +10,8 @@ pythonVersion = "3.9"
 
 typeCheckingMode = "strict"
 
+reportImportCycles = false
+
 # enable these for now as none of raise any
 # errors anyway
 reportCallInDefaultInitializer = true
