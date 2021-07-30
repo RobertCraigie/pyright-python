@@ -4,6 +4,7 @@ import pipes
 import shutil
 import logging
 import subprocess
+from functools import lru_cache
 from typing import Dict, Tuple, Optional, Union, Any
 from pathlib import Path
 
@@ -122,6 +123,7 @@ def version(target: Target) -> Tuple[int, ...]:
     return info
 
 
+@lru_cache(maxsize=None)
 def latest(package: str) -> str:
     """Return the latest version for the given package"""
     proc = run(
