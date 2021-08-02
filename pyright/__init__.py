@@ -4,7 +4,7 @@ __title__ = 'pyright'
 __author__ = 'RobertCraigie'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2021 Robert Craigie'
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 
 import os
