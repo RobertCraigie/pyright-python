@@ -118,7 +118,7 @@ def version(target: Target) -> Tuple[int, ...]:
     else:
         output = proc.stdout
 
-    info = tuple(map(int, output.rstrip('\n').split('.')))
+    info = tuple(int(value) for value in output.splitlines()[0].split('.'))
     log.debug('Version check for %s returning %s', target, info)
     return info
 
@@ -143,7 +143,7 @@ def latest(package: str) -> str:
         print(stdout, file=sys.stderr)
         raise RuntimeError(f'Version check for {package} failed, see output above.')
 
-    latest = stdout.rstrip('\n')
+    latest, *_ = stdout.splitlines()
     log.debug('Version check for %s returning %s', package, latest)
     return latest
 
