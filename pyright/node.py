@@ -149,7 +149,9 @@ def latest(package: str) -> str:
 
     if proc.returncode != 0:
         print(stdout, file=sys.stderr)
-        raise errors.VersionCheckFailed(f'Version check for {package} failed, see output above.')
+        raise errors.VersionCheckFailed(
+            f'Version check for {package} failed, see output above.'
+        )
 
     match = VERSION_RE.search(stdout)
     if not match:

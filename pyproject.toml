@@ -4,7 +4,8 @@ skip-string-normalization = true
 
 [tool.pyright]
 include = [
-    "pyright"
+    "pyright",
+    "tests",
 ]
 pythonVersion = "3.9"
 
