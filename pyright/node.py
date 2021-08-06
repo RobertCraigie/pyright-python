@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import Dict, Tuple, Optional, Union, Any
 from pathlib import Path
 
+from . import errors
 from .types import Binary, Target, Strategy, check_target
 from .utils import get_env_dir, env_to_bool
 
@@ -51,9 +52,7 @@ def _ensure_node_env(target: Target) -> Path:
         _install_node_env()
 
     if not path.exists():
-        raise RuntimeError(
-            f'Expected {target} binary to exist at {path} but was not found.'
-        )
+        raise errors.BinaryNotFound(path=path, target=target)
     return path
 
 
@@ -123,7 +122,7 @@ def version(target: Target) -> Tuple[int, ...]:
     match = VERSION_RE.search(output)
     if not match:
         print(output, file=sys.stderr)
-        raise RuntimeError(
+        raise errors.VersionCheckFailed(
             f'Could not find version from `{target} --version`, see output above'
         )
 
@@ -150,12 +149,12 @@ def latest(package: str) -> str:
 
     if proc.returncode != 0:
         print(stdout, file=sys.stderr)
-        raise RuntimeError(f'Version check for {package} failed, see output above.')
+        raise errors.VersionCheckFailed(f'Version check for {package} failed, see output above.')
 
     match = VERSION_RE.search(stdout)
     if not match:
         print(stdout, file=sys.stderr)
-        raise RuntimeError(
+        raise errors.VersionCheckFailed(
             f'Could not find version for {package}, see output above'
         )
 

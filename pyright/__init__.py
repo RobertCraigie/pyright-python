@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pyright: reportUnusedImport=false
 
 __title__ = 'pyright'
 __author__ = 'RobertCraigie'
@@ -8,6 +9,7 @@ __version__ = '0.0.7'
 
 
 import os
+from . import errors
 from .cli import *
 
 
