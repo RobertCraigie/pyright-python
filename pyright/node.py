@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import pipes
 import shutil
@@ -17,6 +18,7 @@ log: logging.Logger = logging.getLogger(__name__)
 ENV_DIR: Path = get_env_dir()
 BINARIES_DIR: Path = ENV_DIR / 'bin'
 USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
+VERSION_RE = re.compile(r'\d+\.\d+\.\d+')
 
 
 def _ensure_available(target: Target) -> Binary:
@@ -118,7 +120,14 @@ def version(target: Target) -> Tuple[int, ...]:
     else:
         output = proc.stdout
 
-    info = tuple(int(value) for value in output.splitlines()[0].split('.'))
+    match = VERSION_RE.search(output)
+    if not match:
+        print(output, file=sys.stderr)
+        raise RuntimeError(
+            f'Could not find version from `{target} --version`, see output above'
+        )
+
+    info = tuple(int(value) for value in match.group(0).split('.'))
     log.debug('Version check for %s returning %s', target, info)
     return info
 
@@ -143,9 +152,16 @@ def latest(package: str) -> str:
         print(stdout, file=sys.stderr)
         raise RuntimeError(f'Version check for {package} failed, see output above.')
 
-    latest, *_ = stdout.splitlines()
-    log.debug('Version check for %s returning %s', package, latest)
-    return latest
+    match = VERSION_RE.search(stdout)
+    if not match:
+        print(stdout, file=sys.stderr)
+        raise RuntimeError(
+            f'Could not find version for {package}, see output above'
+        )
+
+    value = match.group(0)
+    log.debug('Version check for %s returning %s', package, value)
+    return value
 
 
 def get_env_variables() -> Dict[str, Any]:
