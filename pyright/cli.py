@@ -32,7 +32,7 @@ def run(
     else:
         pre_args = []
 
-    return node.run('npx', *pre_args, f'pyright@{version}', '--', *args, **kwargs)
+    return node.run('npx', *pre_args, f'pyright@{version}', '--silent', '--', *args, **kwargs)
 
 
 def entrypoint() -> NoReturn:
