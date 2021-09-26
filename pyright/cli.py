@@ -5,6 +5,7 @@ import subprocess
 from typing import List, NoReturn, Union, Any
 
 from . import node
+from .utils import env_to_bool
 
 
 __all__ = (
@@ -28,7 +29,10 @@ def run(
 
     npx = node.version('npx')
     if npx[0] >= 7:
-        pre_args = ['--silent', '--yes']
+        pre_args = ['--yes']
+
+        if not env_to_bool('PYRIGHT_PYTHON_VERBOSE', default=False):
+            pre_args.insert(0, '--silent')
     else:
         pre_args = []
 

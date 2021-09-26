@@ -53,6 +53,10 @@ Set `PYRIGHT_PYTHON_DEBUG` to any value.
 
 Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`
 
+### Show NPM logs
+
+By default, Pyright for Python disables npm error messages, if you want to display the npm error messages then set `PYRIGHT_PYTHON_VERBOSE` to any truthy value.
+
 ### Force Node Env
 
 Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on or true.
