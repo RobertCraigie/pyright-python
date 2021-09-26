@@ -28,7 +28,7 @@ def run(
 
     npx = node.version('npx')
     if npx[0] >= 7:
-        pre_args = ['--yes', '--silent']
+        pre_args = ['--silent', '--yes']
     else:
         pre_args = []
 
