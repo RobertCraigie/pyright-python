@@ -11,7 +11,7 @@ from pathlib import Path
 
 from . import errors
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool
+from .utils import get_env_dir, env_to_bool, maybe_decode
 
 
 log: logging.Logger = logging.getLogger(__name__)
@@ -114,11 +114,7 @@ def run(
 
 def version(target: Target) -> Tuple[int, ...]:
     proc = run(target, '--version', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    if isinstance(proc.stdout, bytes):
-        output = proc.stdout.decode(sys.getdefaultencoding())
-    else:
-        output = proc.stdout
-
+    output = maybe_decode(proc.stdout)
     match = VERSION_RE.search(output)
     if not match:
         print(output, file=sys.stderr)
@@ -142,10 +138,7 @@ def latest(package: str) -> str:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
-    if isinstance(proc.stdout, bytes):
-        stdout = proc.stdout.decode(sys.getdefaultencoding())
-    else:
-        stdout = proc.stdout
+    stdout = maybe_decode(proc.stdout)
 
     if proc.returncode != 0:
         print(stdout, file=sys.stderr)

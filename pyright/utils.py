@@ -1,6 +1,8 @@
 import os
+import sys
 import tempfile
 from pathlib import Path
+from typing import Union
 
 
 def get_env_dir() -> Path:
@@ -18,3 +20,10 @@ def env_to_bool(key: str, *, default: bool = False) -> bool:
         return default
 
     return value.lower() in {'1', 't', 'on', 'true'}
+
+
+def maybe_decode(data: Union[str, bytes]) -> str:
+    if isinstance(data, bytes):
+        return data.decode(sys.getdefaultencoding())
+
+    return data
