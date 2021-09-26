@@ -9,7 +9,7 @@ __version__ = '0.0.9'
 
 
 import os
-from . import errors
+from . import errors as errors
 from .cli import *
 
 
