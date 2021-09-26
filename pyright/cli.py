@@ -28,11 +28,11 @@ def run(
 
     npx = node.version('npx')
     if npx[0] >= 7:
-        pre_args = ['--yes']
+        pre_args = ['--yes', '--silent']
     else:
         pre_args = []
 
-    return node.run('npx', *pre_args, f'pyright@{version}', '--silent', '--', *args, **kwargs)
+    return node.run('npx', *pre_args, f'pyright@{version}', '--', *args, **kwargs)
 
 
 def entrypoint() -> NoReturn:
