@@ -1,0 +1,51 @@
+import os
+import subprocess
+import sys
+import json
+import tempfile
+from pathlib import Path
+from typing import Any, NoReturn, Union
+
+from . import node
+
+
+TEMP_DIR = Path(tempfile.gettempdir()) / 'pyright-python-langserver'
+
+
+def main(*args: str, **kwargs: Any) -> int:
+    return run(*args, **kwargs).returncode
+
+
+def run(
+    *args: str,
+    **kwargs: Any,
+) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
+    TEMP_DIR.mkdir(exist_ok=True, parents=True)
+
+    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    if version is None:
+        version = node.latest('pyright')
+
+    pkg = TEMP_DIR / 'node_modules' / 'pyright' / 'package.json'
+    if pkg.exists():
+        current_version = json.loads(pkg.read_text()).get('version')
+    else:
+        current_version = None
+
+    # TODO: use the same install location as the pyright CLI
+    if current_version is None or current_version != version:
+        node.run('npm', 'install', f'pyright@{version}', cwd=str(TEMP_DIR), check=True)
+
+    binary = TEMP_DIR / 'node_modules' / 'pyright' / 'langserver.index.js'
+    if not binary.exists():
+        raise RuntimeError(f'Expected language server entrypoint: {binary} to exist')
+
+    return node.run('node', str(binary), '--', *args, **kwargs)
+
+
+def entrypoint() -> NoReturn:
+    sys.exit(main(*sys.argv[1:]))
+
+
+if __name__ == '__main__':
+    entrypoint()

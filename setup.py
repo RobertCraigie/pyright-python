@@ -49,6 +49,8 @@ setup(
         'console_scripts': [
             'pyright=pyright.cli:entrypoint',
             'pyright-python=pyright.cli:entrypoint',
+            'pyright-langserver=pyright.langserver:entrypoint',
+            'pyright-python-langserver=pyright.langserver:entrypoint',
         ],
     },
     extras_require={
