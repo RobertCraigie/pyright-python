@@ -17,9 +17,6 @@ def main() -> None:
     if dist.exists():
         shutil.rmtree(str(dist))
 
-    run('git', 'tag', '-s', f'v{__version__}', '-m', f'{__version__} release')
-    run('git', 'push', '--tags')
-
     run(sys.executable, 'setup.py', 'sdist')
     run(sys.executable, 'setup.py', 'sdist', 'bdist_wheel')
     run('twine', 'upload', 'dist/*')
