@@ -11,7 +11,7 @@ def get_env_dir() -> Path:
     if env_dir is not None:
         return Path(env_dir)
 
-    return Path(tempfile.gettempdir()) / 'pyright-prisma' / 'env'
+    return Path(tempfile.gettempdir()) / 'pyright-python' / 'env'
 
 
 def env_to_bool(key: str, *, default: bool = False) -> bool:
