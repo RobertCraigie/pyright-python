@@ -36,7 +36,7 @@ def run(
     else:
         pre_args = []
 
-    if args:
+    if args and pre_args:
         args = ('--', *args)
 
     return node.run('npx', *pre_args, f'pyright@{version}', *args, **kwargs)
