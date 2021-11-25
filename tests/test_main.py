@@ -47,7 +47,7 @@ def test_long_arguments(tmp_path: Path) -> None:
 
 
 def test_argument_separator(tmp_path: Path) -> None:
-    """Ensure the npx / pyright argument separator correctly separates arguments"""
+    """Ensure the npx / pyright argument separator correctly separates arguments."""
     tmp_path.joinpath('foo.py').write_text('reveal_type(1)')
 
     result = pyright.run('foo.py', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
