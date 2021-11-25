@@ -37,7 +37,6 @@ def run(
         pre_args = []
 
     if args and pre_args:
-        print('fake change')
         args = ('--', *args)
 
     return node.run('npx', *pre_args, f'pyright@{version}', *args, **kwargs)
