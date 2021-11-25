@@ -21,13 +21,16 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     strategy:
-      # TODO: test more python versions
-      max-parallel: 2
+      # TODO: test multiple node versions
       matrix:
         include:
-        - python-version: 3.6
+        - python-version: '3.6'
           tox-env: py36
-        - python-version: 3.9
+        - python-version: '3.7'
+          tox-env: py37
+        - python-version: '3.8'
+          tox-env: py38
+        - python-version: '3.9'
           tox-env: py39
 
     steps:
