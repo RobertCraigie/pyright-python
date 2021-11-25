@@ -19,9 +19,10 @@ on:
 jobs:
   test:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         # NOTE: we only test different node versions on Python3.9 as
         # there shouldn't be any incompatabilities between python and node
         include:
