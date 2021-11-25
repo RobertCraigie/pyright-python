@@ -4,7 +4,7 @@ import subprocess
 
 
 def main(*args: str) -> None:
-    expected_version = args[0]
+    expected_version = f'v{args[0]}'
     node = shutil.which('node')
     assert node is not None
     output = subprocess.check_output([node, '--version']).decode('utf-8')
