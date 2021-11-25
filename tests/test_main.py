@@ -54,4 +54,4 @@ def test_argument_separator(tmp_path: Path) -> None:
     assert result.returncode == 0
 
     output = maybe_decode(result.stdout)
-    assert re.match(r'File or directory .* does not exist\.', output) is None
+    assert 'does not exist' not in output
