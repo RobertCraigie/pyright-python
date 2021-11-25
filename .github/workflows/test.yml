@@ -71,7 +71,7 @@ jobs:
       
       - name: Ensure node version
         run: |
-          python .github/scripts/check_node.py
+          python .github/scripts/check_node.py '12'
 
       - name: Run tests
         run: |

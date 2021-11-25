@@ -4,12 +4,15 @@ import subprocess
 
 
 def main(*args: str) -> None:
-    print(args)
+    expected_version = args[0]
     node = shutil.which('node')
-    assert node
-    output = subprocess.check_output([node, '--version'])
-    print(output)
-    assert False
+    assert node is not None
+    output = subprocess.check_output([node, '--version']).decode('utf-8')
+    if not output.startswith(expected_version):
+        raise RuntimeError(
+            f'Expected node version to start with: {expected_version} but got '
+            + f'version: {output} instead.'
+        )
 
 
 if __name__ == '__main__':
