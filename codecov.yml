@@ -1,0 +1,13 @@
+coverage:
+  status:
+    patch:
+      default:
+        target: auto
+        # TODO: change this
+        threshold: 100%
+        base: auto
+    project:
+      default:
+        target: auto
+        threshold: 10%
+        base: auto 
