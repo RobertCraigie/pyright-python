@@ -24,12 +24,14 @@ def test_module_invocation() -> None:
 
 def test_entry_point() -> None:
     proc = subprocess.run(
-        ['pyright', '--version'],
+        ['pyright', 'foo'],
         check=True,
         stdout=subprocess.PIPE,
     )
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
+    print(output)
+    assert False
     match = VERSION_REGEX.match(output)
     assert match is not None
 
