@@ -71,7 +71,7 @@ jobs:
       
       - name: Ensure node version
         run: |
-          python .github/scripts/check_node.py '12'
+          python .github/scripts/check_node.py '${{ matrix.node }}'
 
       - name: Run tests
         run: |
