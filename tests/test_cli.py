@@ -15,7 +15,13 @@ from pyright import cli
             (7, 0),
             '2',
             ['foo', 'bar'],
-            ['npx', '--silent', '--yes', '--', 'pyright@2', 'foo', 'bar'],
+            ['npx', '--silent', '--yes', 'pyright@2', 'foo', 'bar'],
+        ],
+        [
+            (7, 0),
+            '2',
+            ['foo', '--', 'bar'],
+            ['npx', '--silent', '--yes', 'pyright@2', 'foo', '--', 'bar'],
         ],
     ],
 )

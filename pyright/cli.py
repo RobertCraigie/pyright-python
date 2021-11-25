@@ -31,9 +31,6 @@ def build_cmd(
     else:
         pre_args = []
 
-    if args and pre_args:
-        pre_args = (*pre_args, '--')
-
     return ['npx', *pre_args, f'pyright@{pyright_version}', *args]
 
 
