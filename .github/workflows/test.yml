@@ -19,30 +19,12 @@ on:
 jobs:
   test:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # NOTE: we only test different node versions on Python3.9 as
-        # there shouldn't be any incompatabilities between python and node
-        include:
-        - node: 16
-          python-version: '3.6'
-          tox-env: py36
-        - node: 16
-          python-version: '3.7'
-          tox-env: py37
-        - node: 16
-          python-version: '3.8'
-          tox-env: py38
-        - node: 12
-          python-version: '3.9'
-          tox-env: py39
-        - node: 14
-          python-version: '3.9'
-          tox-env: py39
-        - node: 16
-          python-version: '3.9'
-          tox-env: py39
+        os: [ubuntu-latest, macos-latest]
+        node: [12, 14, 16]
+        python-version: ['3.6', '3.7', '3.8', '3.9']
 
     steps:
       - uses: actions/checkout@v1
@@ -75,7 +57,7 @@ jobs:
 
       - name: Run tests
         run: |
-          tox -e setup,${{ matrix.tox-env }},report
+          tox -e setup,py,report
 
       - name: Upload coverage
         run: |
