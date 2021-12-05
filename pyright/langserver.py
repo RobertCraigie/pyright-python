@@ -10,8 +10,7 @@ from typing import Any, NoReturn, Union
 from . import node
 
 
-TEMP_DIR = (Path(tempfile.gettempdir())
-            / f'pyright-python-langserver.{getuser()}')
+TEMP_DIR = Path(tempfile.gettempdir()) / f'pyright-python-langserver.{getuser()}'
 
 
 def main(*args: str, **kwargs: Any) -> int:
