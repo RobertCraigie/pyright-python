@@ -10,7 +10,16 @@ from typing import Any, NoReturn, Union
 from . import node
 
 
-TEMP_DIR = Path(tempfile.gettempdir()) / f'pyright-python-langserver.{getuser()}'
+def get_temp_dir() -> Path:
+    try:
+        suffix = f'.{getuser()}'
+    except Exception:
+        suffix = ''
+
+    return Path(tempfile.gettempdir()) / f'pyright-python-langserver{suffix}'
+
+
+TEMP_DIR = get_temp_dir()
 
 
 def main(*args: str, **kwargs: Any) -> int:

@@ -12,7 +12,12 @@ def get_env_dir() -> Path:
     if env_dir is not None:
         return Path(env_dir)
 
-    return Path(tempfile.gettempdir()) / f'pyright-python.{getuser()}' / 'env'
+    try:
+        suffix = f'.{getuser()}'
+    except Exception:
+        suffix = ''
+
+    return Path(tempfile.gettempdir()) / f'pyright-python{suffix}' / 'env'
 
 
 def env_to_bool(key: str, *, default: bool = False) -> bool:
