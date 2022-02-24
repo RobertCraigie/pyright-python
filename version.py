@@ -2,7 +2,6 @@ import argparse
 import fileinput
 import re
 from packaging import version
-import semver
 
 
 def get_pyright_version() -> str:
@@ -33,16 +32,6 @@ def set_pyright_ver(ver: str):
                 f"__version__ = '{ver}'",
                 line.rstrip(),
             )
-            print(line)
-
-
-def bump_pyright_package_ver():
-    with fileinput.input('pyright/_version.py', inplace=True) as f:
-        for line in f:
-            line = line.rstrip()
-            current_version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', line)
-            if current_version:
-                line = f"__version__ = '{semver.VersionInfo.parse(current_version.group(1)).bump_patch()}'"
             print(line)
 
 
