@@ -50,7 +50,7 @@ def test_module_invocation_latest_version() -> None:
     output = proc.stdout.decode('utf-8')
     match = VERSION_REGEX.match(output)
     assert match is not None
-    assert version.parse(match.group(1)) > version.parse('1.1.223')
+    assert version.parse(match.group(1)) >= version.parse(pyright.__pyright_version__)
 
 
 def test_entry_point() -> None:

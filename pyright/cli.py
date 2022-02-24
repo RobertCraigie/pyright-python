@@ -4,9 +4,8 @@ import logging
 import subprocess
 from typing import List, NoReturn, Union, Any
 
-from . import node
+from . import __pyright_version__, node
 from .utils import env_to_bool
-from . import __pyright_version__
 
 
 __all__ = (

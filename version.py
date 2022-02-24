@@ -1,7 +1,6 @@
 import argparse
-from fileinput import FileInput
+import fileinput
 import re
-import sys
 from packaging import version
 import semver
 
@@ -22,26 +21,24 @@ def compare(ver: str) -> bool:
 
 
 def set_pyright_ver(ver: str):
-    with FileInput('pyright/__init__.py', inplace=True) as f:  # type: ignore
-        for line in f:  # type: ignore
+    with fileinput.input('pyright/__init__.py', inplace=True) as f:
+        for line in f:
             line = re.sub(
                 r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                 f"__pyright_version__ = '{ver}'",
-                line.rstrip(),  # type: ignore
-            )  # type: ignore
+                line.rstrip(),
+            )
             print(line)
 
 
 def bump_pyright_package_ver():
-    with FileInput('pyright/__init__.py', inplace=True) as f:  # type: ignore
-        for line in f:  # type: ignore
-            line = line.rstrip()  # type: ignore
-            current_version = re.search(
-                r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', line  # type:ignore
-            )
+    with fileinput.input('pyright/__init__.py', inplace=True) as f:
+        for line in f:
+            line = line.rstrip()
+            current_version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', line)
             if current_version:
-                line = f"__version__ = '{semver.VersionInfo.parse(current_version.group(1)).bump_patch()}'"  # type:ignore
-            print(line)  # type: ignore
+                line = f"__version__ = '{semver.VersionInfo.parse(current_version.group(1)).bump_patch()}'"
+            print(line)
 
 
 if __name__ == "__main__":
