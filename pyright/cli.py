@@ -6,6 +6,7 @@ from typing import List, NoReturn, Union, Any
 
 from . import node
 from .utils import env_to_bool
+from . import __pyright_version__
 
 
 __all__ = (
@@ -23,8 +24,8 @@ def main(args: List[str], **kwargs: Any) -> int:
 def run(
     *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
-    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
-    if version is None:
+    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
+    if version == 'latest':
         version = node.latest('pyright')
 
     npx = node.version('npx')

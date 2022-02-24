@@ -1,8 +1,10 @@
+import os
 import re
 import sys
 import json
 import subprocess
 from pathlib import Path
+from packaging import version
 
 import pyright
 from pyright.node import maybe_decode
@@ -21,6 +23,34 @@ def test_module_invocation() -> None:
     output = proc.stdout.decode('utf-8')
     match = VERSION_REGEX.match(output)
     assert match is not None
+
+
+def test_module_invocation_version() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='1.1.223'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    match = VERSION_REGEX.match(output)
+    assert match is not None
+    assert match.group(1) == '1.1.223'
+
+
+def test_module_invocation_latest_version() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='latest'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    match = VERSION_REGEX.match(output)
+    assert match is not None
+    assert version.parse(match.group(1)) > version.parse('1.1.223')
 
 
 def test_entry_point() -> None:
