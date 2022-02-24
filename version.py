@@ -6,7 +6,7 @@ import semver
 
 
 def get_pyright_version() -> str:
-    with open('pyright/__init__.py') as f:
+    with open('pyright/_version.py') as f:
         match = re.search(
             r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
         )
@@ -21,18 +21,23 @@ def compare(ver: str) -> bool:
 
 
 def set_pyright_ver(ver: str):
-    with fileinput.input('pyright/__init__.py', inplace=True) as f:
+    with fileinput.input('pyright/_version.py', inplace=True) as f:
         for line in f:
             line = re.sub(
                 r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                 f"__pyright_version__ = '{ver}'",
                 line.rstrip(),
             )
+            line = re.sub(
+                r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                f"__version__ = '{ver}'",
+                line.rstrip(),
+            )
             print(line)
 
 
 def bump_pyright_package_ver():
-    with fileinput.input('pyright/__init__.py', inplace=True) as f:
+    with fileinput.input('pyright/_version.py', inplace=True) as f:
         for line in f:
             line = line.rstrip()
             current_version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', line)
@@ -70,4 +75,3 @@ if __name__ == "__main__":
             print('0')
     elif args.set != None:
         set_pyright_ver(args.set[0])
-        bump_pyright_package_ver()

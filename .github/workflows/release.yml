@@ -1,0 +1,28 @@
+name: publish pyright-python
+
+on:
+  # Trigger after Test has completed on main
+  workflow_run:
+    workflows: ["Test"]
+    branches: [main]
+    paths:
+      - "pyright/_version.py"
+    types:
+      - completed
+
+jobs:
+  publish_release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - run: |
+          pip install -r dev-requirements.txt
+          python setup.py sdist bdist_wheel
+          twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} dist/*

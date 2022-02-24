@@ -1,2 +1,4 @@
 tox
 semver==3.0.0.dev3
+twine
+wheel
