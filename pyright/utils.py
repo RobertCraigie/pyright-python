@@ -1,9 +1,17 @@
 import os
 import sys
+import logging
 import tempfile
-from getpass import getuser
 from pathlib import Path
-from typing import Union
+from getpass import getuser
+from functools import lru_cache
+from typing import Union, Optional
+
+from . import _mureq as mureq
+
+
+REPO: str = 'https://api.github.com/repos/RobertCraigie/pyright-python'
+log: logging.Logger = logging.getLogger(__name__)
 
 
 def get_env_dir() -> Path:
@@ -33,3 +41,24 @@ def maybe_decode(data: Union[str, bytes]) -> str:
         return data.decode(sys.getdefaultencoding())
 
     return data
+
+
+@lru_cache(maxsize=None)
+def get_latest_version() -> Optional[str]:
+    """Returns the latest available version of pyright-python.
+
+    This relies on GitHub releases, if GitHub is down or the user is offline then
+    None is returned.
+    """
+    try:
+        response = mureq.get(f"{REPO}/releases/latest", timeout=1)
+        version = response.json()["name"]
+    except Exception as exc:
+        log.debug('Encountered exception while fetching latest release: %s', str(exc))
+        return
+
+    if version.startswith('v'):
+        version = version[1:]
+
+    log.debug('Latest pyright-python version is: %s', version)
+    return version

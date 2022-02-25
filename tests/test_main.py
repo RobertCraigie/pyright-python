@@ -85,3 +85,29 @@ def test_argument_separator(tmp_path: Path) -> None:
 
     output = maybe_decode(result.stdout)
     assert 'does not exist' not in output
+
+
+def test_explicit_version_new_version_warning() -> None:
+    """A new version is available warning is emitted explicitly using an older version"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='1.1.222'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' in output
+
+
+def test_explicit_latest_no_new_version_warning() -> None:
+    """No new version warning is emitted when explicitly setting to `latest`"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='latest'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' not in output
