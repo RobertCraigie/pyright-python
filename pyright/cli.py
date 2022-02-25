@@ -34,7 +34,7 @@ def run(
         # pyright does. Also in order to correctly compare versions we would need an additional
         # depdency. As such this is an acceptable bug.
         latest = get_latest_version()
-        if latest != version:
+        if latest is not None and latest != version:
             print(
                 f'WARNING: there is a new pyright version available (v{latest}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
