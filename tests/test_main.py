@@ -111,3 +111,33 @@ def test_explicit_latest_no_new_version_warning() -> None:
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
+
+
+def test_output_json_no_warning() -> None:
+    """If the --outputjson flag is set then no warning is emitted"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version', '--outputjson'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='1.1.222'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' not in output
+
+
+def test_ignore_warnings_config_no_warning() -> None:
+    """If the --outputjson flag is set then no warning is emitted"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(
+            os.environ,
+            PYRIGHT_PYTHON_FORCE_VERSION='1.1.222',
+            PYRIGHT_PYTHON_IGNORE_WARNINGS='1',
+        ),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' not in output

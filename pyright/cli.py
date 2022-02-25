@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 import subprocess
-from typing import List, NoReturn, Union, Any
+from typing import List, NoReturn, Union, Tuple, Any
 
 from . import __pyright_version__, node
 from .utils import env_to_bool, get_latest_version
@@ -27,14 +27,7 @@ def run(
     if version == 'latest':
         version = node.latest('pyright')
     else:
-        # NOTE: there is an edge case here where a new pyright version has been released
-        # but we haven't made a new pyright-python release yet and the user has set
-        # PYRIGHT_PYTHON_FORCE_VERSION to the new pyright version.
-        # This should rarely happen as we make new releases very frequently after
-        # pyright does. Also in order to correctly compare versions we would need an additional
-        # depdency. As such this is an acceptable bug.
-        latest = get_latest_version()
-        if latest is not None and latest != version:
+        if _should_warn_version(version, args=args):
             print(
                 f'WARNING: there is a new pyright version available (v{latest}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
@@ -53,6 +46,26 @@ def run(
         pre_args = (*pre_args, '--')
 
     return node.run('npx', *pre_args, f'pyright@{version}', *args, **kwargs)
+
+
+def _should_warn_version(version: str, args: Tuple[object]) -> bool:
+    if '--outputjson' in args:
+        # If this flag is set then the output must be machine parseable
+        return False
+
+    if env_to_bool('PYRIGHT_PYTHON_VERBOSE', default=False) or env_to_bool(
+        'PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False
+    ):
+        return False
+
+    # NOTE: there is an edge case here where a new pyright version has been released
+    # but we haven't made a new pyright-python release yet and the user has set
+    # PYRIGHT_PYTHON_FORCE_VERSION to the new pyright version.
+    # This should rarely happen as we make new releases very frequently after
+    # pyright does. Also in order to correctly compare versions we would need an additional
+    # depdency. As such this is an acceptable bug.
+    latest = get_latest_version()
+    return latest is not None and latest != version
 
 
 def entrypoint() -> NoReturn:
