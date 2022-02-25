@@ -4,8 +4,6 @@
 
 Pyright for Python is a Python command line wrapper over [pyright](https://github.com/microsoft/pyright), a static type checker for Python.
 
-**This project is not suitable for production usage.**
-
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pyright.
@@ -41,6 +39,12 @@ This project works by first checking if node is in the `PATH` and if it is not t
 
 We also automatically upgrade the pyright npm package to it's latest version on every run, see below for how to change this behaviour.
 
+## Automatically keeping pyright up to date
+
+By default Pyright for Python is set to target a specific pyright version and new releases will be automatically created whenever a new pyright version is released. It is highly recommended to use an automatic dependency update tool such as [dependabot](https://docs.github.com/en/code-security/supply-chain-security/managing-vulnerabilities-in-your-projects-dependencies/configuring-dependabot-security-updates).
+
+If you would rather not have to update your installation every time a new pyright release is created then you can automatically use the latest available pyright version by setting the environment variable `PYRIGHT_PYTHON_FORCE_VERSION` to `latest`.
+
 ## Configuration
 
 You can configure Pyright for Python using environment variables.
@@ -51,7 +55,7 @@ Set `PYRIGHT_PYTHON_DEBUG` to any value.
 
 ### Modify Pyright Version
 
-Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`
+Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`, `latest`
 
 ### Show NPM logs
 
