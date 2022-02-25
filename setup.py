@@ -8,7 +8,7 @@ with open('README.md', 'r') as f:
     readme = f.read()
 
 version = ''
-with open('pyright/__init__.py') as f:
+with open('pyright/_version.py') as f:
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
     if not match:
         raise RuntimeError('version is not set')
