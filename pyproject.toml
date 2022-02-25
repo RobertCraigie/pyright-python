@@ -1,11 +1,15 @@
 [tool.black]
 skip-string-normalization = true
+extend-exclude = '_mureq.py'
 
 
 [tool.pyright]
 include = [
     "pyright",
     "tests",
+]
+exclude = [
+    "pyright/_mureq.py"
 ]
 pythonVersion = "3.9"
 
