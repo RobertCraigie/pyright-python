@@ -36,8 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
         with:
           commit-message: Pyright NPM Package update to ${{ env.PYRIGHT_VERSION }}
-          committer: GitHub <noreply@github.com>
-          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           signoff: false
           branch: pyright-update-${{ env.BRANCH_NAME }}
           delete-branch: true
