@@ -6,8 +6,6 @@ import subprocess
 from pathlib import Path
 from packaging import version
 
-import pytest
-
 import pyright
 from pyright.node import maybe_decode
 
