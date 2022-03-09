@@ -89,10 +89,6 @@ def test_argument_separator(tmp_path: Path) -> None:
     assert 'does not exist' not in output
 
 
-@pytest.mark.skipif(
-    sys.platform == 'darwin',
-    reason='Test is flaky on MacOS for some reason',
-)
 def test_explicit_version_new_version_warning() -> None:
     """A new version is available warning is emitted explicitly using an older version"""
     proc = subprocess.run(
