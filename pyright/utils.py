@@ -10,7 +10,7 @@ from typing import Union, Optional
 from . import _mureq as mureq
 
 
-REPO: str = 'https://api.github.com/repos/RobertCraigie/pyright-python'
+PYPI_API_URL: str = 'https://pypi.org/pypi/pyright/json'
 log: logging.Logger = logging.getLogger(__name__)
 
 
@@ -47,14 +47,18 @@ def maybe_decode(data: Union[str, bytes]) -> str:
 def get_latest_version() -> Optional[str]:
     """Returns the latest available version of pyright-python.
 
-    This relies on GitHub releases, if GitHub is down or the user is offline then
+    This relies on the JSON PyPi API, if PyPi is down or the user is offline then
     None is returned.
     """
     try:
-        response = mureq.get(f"{REPO}/releases/latest", timeout=1)
-        version = response.json()["name"]
+        response = mureq.get(PYPI_API_URL, timeout=1)
+        version = response.json()["info"]["version"]
     except Exception as exc:
-        log.debug('Encountered exception while fetching latest release: %s', str(exc))
+        log.debug(
+            'Encountered exception while fetching latest release: %s - %s',
+            type(exc),
+            exc,
+        )
         return
 
     if version.startswith('v'):
