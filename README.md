@@ -40,7 +40,9 @@ repos:
     - id: pyright
 ```
 
-To fix missing import errors add virtual environment settings in the config file:
+Pre-commit will install pyright-python in it's own virtual environment which can cause pyright to not be able to detect your installed dependencies.
+
+To fix this you can either [tell pre-coomit](https://pre-commit.com/#config-additional_dependencies) to also install hose depencies or explicitly tell pyright which virtual environment to use by updating your [pyright configuration file](https://github.com/microsoft/pyright/blob/main/docs/configuration.md):
 
 ```toml
 [tool.pyright]
