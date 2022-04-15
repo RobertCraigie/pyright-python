@@ -28,29 +28,27 @@ python3 -m pyright --help
 
 Pyright for Python should work exactly the same as pyright does, see the [pyright documentation](https://github.com/microsoft/pyright/blob/main/docs/getting-started.md) for details on how to make use of pyright.
 
-You can also setup pyright to run automatically before commit by setting up [pre-commit](https://pre-commit.com) and registering pyright in your .pre-commit-config.yaml.
-repos:
+### Pre-commit
+
+You can also setup pyright to run automatically before each commit by setting up [pre-commit](https://pre-commit.com) and registering pyright in your `.pre-commit-config.yaml` file
+
 ```yaml
-# ...
-- repo: https://github.com/RobertCraigie/pyright-python
-  rev: v1.1.237
-  hooks:
-  - id: pyright
+repos:
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.237
+    hooks:
+    - id: pyright
 ```
+
 To fix missing import errors add virtual environment settings in the config file:
+
 ```toml
 [tool.pyright]
-include = [
-    "src",
-    "tests",
-]
-pythonVersion = "3.9"
-typeCheckingMode = "strict"
-
-# this part
+# ...
 venvPath = "."
 venv = ".venv"
 ```
+
 ## Motivation
 
 [Pyright](https://github.com/microsoft/pyright) is written in TypeScript and requires node to be installed and is normally installed with npm, this could be a barrier for entry for some python developers as they may not have node or npm, installed on their machine, I wanted to make pyright as easy to install as any normal python package.
