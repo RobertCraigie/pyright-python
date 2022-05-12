@@ -1,8 +1,8 @@
 # Pyright for Python
 
-> This project is not affiliated with Microsoft in any way, shape or form
+> This project is not affiliated with Microsoft in any way, shape, or form
 
-Pyright for Python is a Python command line wrapper over [pyright](https://github.com/microsoft/pyright), a static type checker for Python.
+Pyright for Python is a Python command-line wrapper over [pyright](https://github.com/microsoft/pyright), a static type checker for Python.
 
 ## Installation
 
@@ -40,9 +40,9 @@ repos:
     - id: pyright
 ```
 
-Pre-commit will install pyright-python in it's own virtual environment which can cause pyright to not be able to detect your installed dependencies.
+Pre-commit will install pyright-python in its own virtual environment which can cause pyright to not be able to detect your installed dependencies.
 
-To fix this you can either [tell pre-coomit](https://pre-commit.com/#config-additional_dependencies) to also install hose depencies or explicitly tell pyright which virtual environment to use by updating your [pyright configuration file](https://github.com/microsoft/pyright/blob/main/docs/configuration.md):
+To fix this you can either [tell pre-coomit](https://pre-commit.com/#config-additional_dependencies) to also install those dependencies or explicitly tell pyright which virtual environment to use by updating your [pyright configuration file](https://github.com/microsoft/pyright/blob/main/docs/configuration.md):
 
 ```toml
 [tool.pyright]
@@ -53,14 +53,14 @@ venv = ".venv"
 
 ## Motivation
 
-[Pyright](https://github.com/microsoft/pyright) is written in TypeScript and requires node to be installed and is normally installed with npm, this could be a barrier for entry for some python developers as they may not have node or npm, installed on their machine, I wanted to make pyright as easy to install as any normal python package.
+[Pyright](https://github.com/microsoft/pyright) is written in TypeScript, requiring node to be installed, and is normally installed with npm. This could be an entry barrier for some Python developers as they may not have node or npm installed on their machine; I wanted to make pyright as easy to install as any normal Python package.
 
 
 ## How Pyright for Python Works
 
-This project works by first checking if node is in the `PATH` and if it is not then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
+This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
 
-We also automatically upgrade the pyright npm package to it's latest version on every run, see below for how to change this behaviour.
+We also automatically upgrade the pyright npm package to its latest version on every run, see below for how to change this behaviour.
 
 ## Automatically keeping pyright up to date
 
@@ -86,7 +86,7 @@ By default, Pyright for Python disables npm error messages, if you want to displ
 
 ### Force Node Env
 
-Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on or true.
+Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on, or true.
 e.g. `off`
 
 ### Modify Node Env Location
@@ -95,7 +95,7 @@ Set `PYRIGHT_PYTHON_ENV_DIR` to a valid [nodeenv](https://github.com/ekalinin/no
 
 ### Ignore Warnings
 
-Set `PYRIGHT_PYTHON_IGNORE_WARNINGS` to a truthy value, e.g. 1, t, on or true.
+Set `PYRIGHT_PYTHON_IGNORE_WARNINGS` to a truthy value, e.g. 1, t, on, or true.
 
 Pyright for Python will print warnings for the following case(s)
 
