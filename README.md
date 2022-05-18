@@ -1,5 +1,8 @@
 # Pyright for Python
 
+[![Downloads](https://pepy.tech/badge/pyright)](https://pepy.tech/project/pyright)
+![PyPI](https://img.shields.io/pypi/v/pyright)
+
 > This project is not affiliated with Microsoft in any way, shape, or form
 
 Pyright for Python is a Python command-line wrapper over [pyright](https://github.com/microsoft/pyright), a static type checker for Python.
