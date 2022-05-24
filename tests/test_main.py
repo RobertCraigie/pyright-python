@@ -141,3 +141,16 @@ def test_ignore_warnings_config_no_warning() -> None:
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
+
+
+def test_nodeenv() -> None:
+    """Ensure nodeenv is successfully downloaded and used"""
+    subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(
+            os.environ,
+            PYRIGHT_PYTHON_GLOBAL_NODE='0',
+        ),
+    )

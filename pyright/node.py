@@ -47,8 +47,15 @@ def _ensure_node_env(target: Target) -> Path:
     # This shouldn't really happen but there could
     # be cases where our env dir exists but without the
     # binary so we might as well just double check.
-    path = BINARIES_DIR.joinpath(target)
+
+    if sys.platform == 'win32':
+        executable = f'{target}.exe'
+    else:
+        executable = target
+
+    path = BINARIES_DIR.joinpath(executable)
     if not path.exists():
+        shutil.rmtree(str(ENV_DIR), ignore_errors=True)
         _install_node_env()
 
     if not path.exists():
