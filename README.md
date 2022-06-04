@@ -2,6 +2,7 @@
 
 [![Downloads](https://pepy.tech/badge/pyright)](https://pepy.tech/project/pyright)
 ![PyPI](https://img.shields.io/pypi/v/pyright)
+![Supported python versions](https://img.shields.io/pypi/pyversions/prisma)
 
 > This project is not affiliated with Microsoft in any way, shape, or form
 
