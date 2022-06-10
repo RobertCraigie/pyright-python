@@ -105,6 +105,12 @@ Pyright for Python will print warnings for the following case(s)
 
 - Using [nodeenv](https://github.com/ekalinin/nodeenv) without bash available
 
+### Disable NPX Version Check
+
+By default, Pyright for Python checks the version of the resolved `npx` binary, in some cases this [can cause an error](https://github.com/RobertCraigie/pyright-python/issues/56).
+
+If this is the case for you, then you can disable the version check by setting the environment variable `PYRIGHT_PYTHON_IGNORE_NPX_CHECK` to any truthy value, e.g. 1, t, on or true.
+
 ## Contributing
 
 All pull requests are welcome.

@@ -6,6 +6,7 @@ from typing import List, NoReturn, Union, Tuple, Any
 
 from . import __pyright_version__, node
 from .utils import env_to_bool, get_latest_version
+from .errors import VersionCheckFailed
 
 
 __all__ = (
@@ -33,7 +34,15 @@ def run(
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
-    npx = node.version('npx')
+    try:
+        npx = node.version('npx')
+    except VersionCheckFailed:
+        if not env_to_bool('PYRIGHT_PYTHON_IGNORE_NPX_CHECK', default=False):
+            raise
+
+        log.debug('Ignoring failed version check for npx, defaulting to v7')
+        npx = (7,)
+
     if npx[0] >= 7:
         pre_args = ['--yes']
 

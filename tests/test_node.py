@@ -13,8 +13,6 @@ if TYPE_CHECKING:
 
 # TODO: test binary resolution
 
-NPX = str(node._ensure_available('npx').path)  # pyright: reportPrivateUsage=false
-
 
 @pytest.mark.parametrize(
     'version,output',
@@ -30,19 +28,24 @@ NPX = str(node._ensure_available('npx').path)  # pyright: reportPrivateUsage=fal
     ],
 )
 def test_target_version(
-    fake_process: FakeProcess, output: bytes, version: Tuple[int, ...]
+    npx: str,
+    fake_process: FakeProcess,
+    output: bytes,
+    version: Tuple[int, ...],
 ) -> None:
     fake_process.register_subprocess(
-        [NPX, "--version"], stdout=output
+        [npx, "--version"], stdout=output
     )  # pyright: reportUnknownMemberType=false
     assert node.version('npx') == version
 
 
 def test_target_version_not_found(
-    fake_process: FakeProcess, capsys: 'CaptureFixture[str]'
+    npx: str,
+    fake_process: FakeProcess,
+    capsys: 'CaptureFixture[str]',
 ) -> None:
     fake_process.register_subprocess(
-        [NPX, "--version"], stdout='hello world'
+        [npx, "--version"], stdout='hello world'
     )  # pyright: reportUnknownMemberType=false
 
     with pytest.raises(pyright.errors.VersionCheckFailed) as exc:
