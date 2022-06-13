@@ -30,7 +30,7 @@ def run(
     else:
         if _should_warn_version(version, args=args):
             print(
-                f'WARNING: there is a new pyright version available (v{get_latest_version()}).\n'
+                f'WARNING: there is a new pyright version available (v{__pyright_version__} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
