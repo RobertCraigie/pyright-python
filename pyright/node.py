@@ -134,9 +134,7 @@ def _run_gracefully(
 
 
 def run(
-    target: Target,
-    *args: str,
-    **kwargs: Any,
+    target: Target, *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     check_target(target)
     binary = _ensure_available(target)
