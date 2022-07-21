@@ -109,7 +109,28 @@ def run(
         raise RuntimeError(f'Unknown strategy: {binary.strategy}')
 
     log.debug('Running node command with args: %s', node_args)
-    return subprocess.run(node_args, env=env, **kwargs)
+
+    proc = subprocess.Popen(node_args, env=env, **kwargs)
+    try:
+        return_code = proc.wait()
+        stdout, stderr = proc.communicate()
+    except KeyboardInterrupt as exc:
+        print("Terminating node process, please wait for cleanup to finish...")
+        try:
+            # Use SIGTERM here, not SIGKILL which skips cleanup work, causing
+            # unexpected and hard to debug issues
+            proc.terminate()
+            print("Node process terminated")
+            return_code = 127  # standard code for keyboard interrupt
+            stdout = None
+            stderr = None
+        except KeyboardInterrupt as exc2:
+            # If another keyboard interrupt occurred, kill the process without
+            # waiting on termination but inform the user that this is unsafe.
+            print("Killing the child node process without cleanup. Warning this may lead to issues!")
+            raise exc2 from exc
+
+    return subprocess.CompletedProcess(node_args, return_code, stdout=stdout, stderr=stderr)
 
 
 def version(target: Target) -> Tuple[int, ...]:
