@@ -122,8 +122,7 @@ def run(
             proc.terminate()
             print("Node process terminated")
             return_code = 127  # standard code for keyboard interrupt
-            stdout = None
-            stderr = None
+            stdout, stderr = proc.communicate()
         except KeyboardInterrupt as exc2:
             # If another keyboard interrupt occurred, kill the process without
             # waiting on termination but inform the user that this is unsafe.
