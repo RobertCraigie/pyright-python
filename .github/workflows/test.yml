@@ -25,7 +25,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         node: [12, 14, 16]
         python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0']
-
     # Python 3.11 is currently broken in `setup-python` on MacOS
     # https://github.com/actions/setup-python/issues/531
     if: matrix.python-version != '3.11.0' && matrix.os != 'macos-latest'
