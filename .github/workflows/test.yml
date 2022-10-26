@@ -24,10 +24,22 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         node: [12, 14, 16]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0']
+        # Python 3.11 is currently broken in `setup-python` on MacOS
+        # https://github.com/actions/setup-python/issues/531
+        exclude:
+          - os: macos-latest
+            python-version: '3.11.0'
+            node: 12
+          - os: macos-latest
+            python-version: '3.11.0'
+            node: 14
+          - os: macos-latest
+            python-version: '3.11.0'
+            node: 16
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       # TODO: ensure that pyright-python uses this node version
       - uses: actions/setup-node@v2
@@ -35,7 +47,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -74,10 +86,10 @@ jobs:
         python-version: [3.9]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
