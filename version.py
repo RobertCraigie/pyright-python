@@ -34,6 +34,11 @@ def set_pyright_ver(ver: str):
             )
             print(line)
 
+    with fileinput.input('README.md', inplace=True) as f:
+        for line in f:
+            line = re.sub(r'rev: v(.*)', f'rev: v{ver}', line.rstrip())
+            print(line)
+
 
 if __name__ == "__main__":
     # create a parser object
