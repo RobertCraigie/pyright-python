@@ -59,12 +59,9 @@ venv = ".venv"
 
 [Pyright](https://github.com/microsoft/pyright) is written in TypeScript, requiring node to be installed, and is normally installed with npm. This could be an entry barrier for some Python developers as they may not have node or npm installed on their machine; I wanted to make pyright as easy to install as any normal Python package.
 
-
 ## How Pyright for Python Works
 
 This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
-
-We also automatically upgrade the pyright npm package to its latest version on every run, see below for how to change this behaviour.
 
 ## Automatically keeping pyright up to date
 
