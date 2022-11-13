@@ -108,3 +108,16 @@ jobs:
       - name: Check linters
         run: |
           tox -e lint
+
+  docker-windows:
+    name: docker (windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker Build
+        # Use --% to allow double hyphen
+        # Caching not currently working since we don't use buildx yet, windows
+        # support seems poor because of interactions with --privileged
+        # --cache-from=type=gha --cache-to=type=gha,mode=max
+        run: |
+          docker build --% -f tests/windows.Dockerfile -t pyright-python .
