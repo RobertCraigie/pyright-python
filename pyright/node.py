@@ -104,11 +104,6 @@ def run(
                 f'. {pipes.quote(str(activate))} && {" ".join([target, *args])}',
             ]
         else:
-            if not env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
-                print(
-                    'WARNING: nodeenv usage without access to bash, this is untested behaviour.\n'
-                )
-
             node_args = [str(binary.path), *args]
     elif binary.strategy == Strategy.GLOBAL:
         node_args = [str(binary.path), *args]
