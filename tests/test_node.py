@@ -1,10 +1,14 @@
+import os
+import subprocess
 from typing import Tuple, TYPE_CHECKING
+from pathlib import Path
 
 import pytest
 from pytest_subprocess import FakeProcess
 
 import pyright
 from pyright import node
+from pyright.utils import maybe_decode
 
 
 if TYPE_CHECKING:
@@ -55,3 +59,17 @@ def test_target_version_not_found(
     assert captured.out == ''
     assert captured.err == 'hello world\n'
     assert exc.match('Could not find version from `npx --version`, see output above')
+
+
+def test_run_env_argument(tmp_path: Path) -> None:
+    """Ensure the `run()` function can accept an `env` argument."""
+    tmp_path.joinpath('test.js').write_text("console.log(process.env.MY_ENV_VAR)")
+    proc = node.run(
+        'node',
+        'test.js',
+        env={**os.environ, 'MY_ENV_VAR': 'hello!'},
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    assert proc.returncode == 0
+    assert maybe_decode(proc.stdout) == 'hello!\n'
