@@ -13,7 +13,7 @@ from pathlib import Path
 
 from . import errors
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool, get_bin_dir
+from .utils import get_env_dir, env_to_bool, get_bin_dir, maybe_decode
 
 
 log: logging.Logger = logging.getLogger(__name__)

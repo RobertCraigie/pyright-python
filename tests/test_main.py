@@ -10,7 +10,7 @@ import pytest
 from pytest_subprocess import FakeProcess
 
 import pyright
-from pyright.node import maybe_decode
+from pyright.utils import maybe_decode
 
 
 VERSION_REGEX = re.compile(r'pyright (?P<version>\d+\.\d+\.\d+)')
