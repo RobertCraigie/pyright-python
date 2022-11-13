@@ -51,6 +51,8 @@ COPY --chown=pyright:pyright . .
 RUN pip install --upgrade pip && \
     pip install .[dev]
 
+ENV PYRIGHT_PYTHON_DEBUG="1"
+
 # This has the side-effect of downing the node binaries
 # and will fail if the CLI cannot be ran
 RUN pyright --version
