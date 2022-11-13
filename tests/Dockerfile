@@ -49,7 +49,9 @@ ENV PATH="/home/pyright/.local/bin:${PATH}"
 COPY --chown=pyright:pyright . .
 
 RUN pip install --upgrade pip && \
-    pip install .[dev]
+    pip install .
+
+RUN pip install -U -r dev-requirements.txt
 
 ENV PYRIGHT_PYTHON_DEBUG="1"
 
