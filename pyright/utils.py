@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import tempfile
+import platform
 from pathlib import Path
 from getpass import getuser
 from functools import lru_cache
@@ -26,6 +27,13 @@ def get_env_dir() -> Path:
         suffix = ''
 
     return Path(tempfile.gettempdir()) / f'pyright-python{suffix}' / 'env'
+
+
+def get_bin_dir(*, env_dir: Path) -> Path:
+    name = platform.system().lower()
+    if name == 'windows':
+        return env_dir / 'Scripts'
+    return env_dir / 'bin'
 
 
 def env_to_bool(key: str, *, default: bool = False) -> bool:

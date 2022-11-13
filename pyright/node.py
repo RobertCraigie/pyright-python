@@ -13,13 +13,13 @@ from pathlib import Path
 
 from . import errors
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool, maybe_decode
+from .utils import get_env_dir, env_to_bool, get_bin_dir
 
 
 log: logging.Logger = logging.getLogger(__name__)
 
 ENV_DIR: Path = get_env_dir()
-BINARIES_DIR: Path = ENV_DIR / 'bin'
+BINARIES_DIR: Path = get_bin_dir(env_dir=ENV_DIR)
 USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
 VERSION_RE = re.compile(r'\d+\.\d+\.\d+')
 
