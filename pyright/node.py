@@ -6,6 +6,7 @@ import sys
 import pipes
 import shutil
 import logging
+import platform
 import subprocess
 from functools import lru_cache
 from typing import Dict, Mapping, Tuple, Optional, Union, Any
@@ -36,6 +37,10 @@ def _ensure_available(target: Target) -> Binary:
     return Binary(path=_ensure_node_env(target), strategy=Strategy.NODEENV)
 
 
+def _is_windows() -> bool:
+    return platform.system().lower() == 'windows'
+
+
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
@@ -49,7 +54,11 @@ def _ensure_node_env(target: Target) -> Path:
     # This shouldn't really happen but there could
     # be cases where our env dir exists but without the
     # binary so we might as well just double check.
-    path = BINARIES_DIR.joinpath(target)
+    if _is_windows():
+        path = BINARIES_DIR.joinpath(target + '.exe')
+    else:
+        path = BINARIES_DIR.joinpath(target)
+
     if not path.exists():
         _install_node_env()
 
@@ -96,6 +105,7 @@ def run(
         # assume it is present will work.
         env.update(PATH=_update_path_env(env=env, target_bin=binary.path.parent))
 
+        # TODO: should we remove this bash usage?
         if shutil.which('bash'):
             activate = binary.path.parent / 'activate'
             node_args = [
