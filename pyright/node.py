@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import re
 import sys
-import pipes
 import shutil
 import logging
 import platform
@@ -104,17 +103,7 @@ def run(
         # to ensure that `node` is in the PATH so that any install scripts that
         # assume it is present will work.
         env.update(PATH=_update_path_env(env=env, target_bin=binary.path.parent))
-
-        # TODO: should we remove this bash usage?
-        if shutil.which('bash'):
-            activate = binary.path.parent / 'activate'
-            node_args = [
-                'bash',
-                '-c',
-                f'. {pipes.quote(str(activate))} && {" ".join([target, *args])}',
-            ]
-        else:
-            node_args = [str(binary.path), *args]
+        node_args = [str(binary.path), *args]
     elif binary.strategy == Strategy.GLOBAL:
         node_args = [str(binary.path), *args]
     else:
