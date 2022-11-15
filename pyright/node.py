@@ -184,7 +184,7 @@ def _update_path_env(
         env = dict(os.environ)
 
     log.debug('Attempting to preprend %s to the PATH', target_bin)
-    assert target_bin.exists(), 'Target `bin` directory does not exist'
+    assert target_bin.exists(), f'Target directory {target_bin} does not exist'
 
     path = env.get('PATH', '') or os.environ.get('PATH', '')
     if path:
