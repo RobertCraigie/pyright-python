@@ -17,6 +17,8 @@ typeCheckingMode = "strict"
 
 reportImportCycles = false
 
+reportPrivateUsage = false
+
 # enable these for now as none of raise any
 # errors anyway
 reportCallInDefaultInitializer = true
