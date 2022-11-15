@@ -45,6 +45,9 @@ def _ensure_node_env(target: Target) -> Path:
 
     if _is_windows():
         path = BINARIES_DIR.joinpath(target + '.exe')
+        # TODO: remove
+        for p in BINARIES_DIR.iterdir():
+            log.debug('found path - %s', p)
     else:
         path = BINARIES_DIR.joinpath(target)
 
