@@ -119,7 +119,7 @@ jobs:
         python-os-distro: [slim-bullseye, alpine]
         exclude:
           # Dockerfile is currently broken for alpine / arm64
-          # TODO: create ticket
+          # https://github.com/RobertCraigie/pyright-python/issues/123
           - docker-platform: linux/arm64
             python-os-distro: alpine
     steps:
