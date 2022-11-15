@@ -43,22 +43,17 @@ def _is_windows() -> bool:
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
-    if not ENV_DIR.exists():
-        log.debug('Environment not found at %s', ENV_DIR)
-        _install_node_env()
-    else:
-        log.debug('Environment exists at %s', ENV_DIR)
-
-    # Ensure the target binary exists.
-    # This shouldn't really happen but there could
-    # be cases where our env dir exists but without the
-    # binary so we might as well just double check.
     if _is_windows():
         path = BINARIES_DIR.joinpath(target + '.exe')
     else:
         path = BINARIES_DIR.joinpath(target)
 
-    if not path.exists():
+    log.debug('Using %s path for binary', path)
+
+    if path.exists():
+        log.debug('Binary at %s exists, skipping nodeenv installation', path)
+    else:
+        log.debug('Installing nodeenv as a binary at %s could not be found', path)
         _install_node_env()
 
     if not path.exists():
