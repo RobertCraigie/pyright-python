@@ -40,13 +40,19 @@ def _is_windows() -> bool:
     return platform.system().lower() == 'windows'
 
 
+def _postfix_for_target(target: Target) -> str:
+    if not _is_windows():
+        return ''
+
+    if target == 'node':
+        return '.exe'
+    return '.cmd'
+
+
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
-    if _is_windows():
-        path = BINARIES_DIR.joinpath(target + '.exe')
-    else:
-        path = BINARIES_DIR.joinpath(target)
+    path = BINARIES_DIR.joinpath(target + _postfix_for_target(target))
 
     log.debug('Using %s path for binary', path)
 
