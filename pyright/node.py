@@ -1,12 +1,13 @@
+from __future__ import annotations
+
 import os
 import re
 import sys
-import pipes
 import shutil
 import logging
 import subprocess
 from functools import lru_cache
-from typing import Dict, Tuple, Optional, Union, Any
+from typing import Dict, Mapping, Tuple, Optional, Union, Any
 from pathlib import Path
 
 from . import errors
@@ -84,25 +85,16 @@ def run(
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     check_target(target)
     binary = _ensure_available(target)
-    env = os.environ.copy()
+    env = kwargs.pop('env', None) or os.environ.copy()
 
     if binary.strategy == Strategy.NODEENV:
         env.update(get_env_variables())
 
-        if shutil.which('bash'):
-            activate = binary.path.parent / 'activate'
-            node_args = [
-                'bash',
-                '-c',
-                f'. {pipes.quote(str(activate))} && {" ".join([target, *args])}',
-            ]
-        else:
-            if not env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
-                print(
-                    'WARNING: nodeenv usage without access to bash, this is untested behaviour.\n'
-                )
-
-            node_args = [str(binary.path), *args]
+        # If we're using `nodeenv` to resolve the node binary then we also need
+        # to ensure that `node` is in the PATH so that any install scripts that
+        # assume it is present will work.
+        env.update(PATH=_update_path_env(env=env, target_bin=binary.path.parent))
+        node_args = [str(binary.path), *args]
     elif binary.strategy == Strategy.GLOBAL:
         node_args = [str(binary.path), *args]
     else:
@@ -167,3 +159,35 @@ def get_env_variables() -> Dict[str, Any]:
         'NPM_CONFIG_PREFIX': str(ENV_DIR),
         'npm_config_prefix': str(ENV_DIR),
     }
+
+
+def _update_path_env(
+    *,
+    env: Mapping[str, str] | None,
+    target_bin: Path,
+    sep: str = os.pathsep,
+) -> str:
+    """Returns a modified version of the `PATH` environment variable that has been updated
+    to include the location of the downloaded Node binaries.
+    """
+    if env is None:
+        env = dict(os.environ)
+
+    log.debug('Attempting to preprend %s to the PATH', target_bin)
+    assert target_bin.exists(), f'Target directory {target_bin} does not exist'
+
+    path = env.get('PATH', '') or os.environ.get('PATH', '')
+    if path:
+        log.debug('Found PATH contents: %s', path)
+
+        # handle the case where the PATH already starts with the separator (this probably shouldn't happen)
+        if path.startswith(sep):
+            path = f'{target_bin.absolute()}{path}'
+        else:
+            path = f'{target_bin.absolute()}{sep}{path}'
+    else:
+        # handle the case where there is no PATH set (unlikely / impossible to actually happen?)
+        path = str(target_bin.absolute())
+
+    log.debug('Using PATH environment variable: %s', path)
+    return path
