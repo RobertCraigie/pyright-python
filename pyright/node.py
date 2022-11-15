@@ -45,9 +45,6 @@ def _ensure_node_env(target: Target) -> Path:
 
     if _is_windows():
         path = BINARIES_DIR.joinpath(target + '.exe')
-        # TODO: remove
-        for p in BINARIES_DIR.iterdir():
-            log.debug('found path - %s', p)
     else:
         path = BINARIES_DIR.joinpath(target)
 
@@ -58,6 +55,10 @@ def _ensure_node_env(target: Target) -> Path:
     else:
         log.debug('Installing nodeenv as a binary at %s could not be found', path)
         _install_node_env()
+
+    # TODO: remove
+    for p in BINARIES_DIR.iterdir():
+        log.debug('found path - %s', p)
 
     if not path.exists():
         raise errors.BinaryNotFound(path=path, target=target)
