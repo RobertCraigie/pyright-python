@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 import sys
@@ -6,7 +8,7 @@ import shutil
 import logging
 import subprocess
 from functools import lru_cache
-from typing import Dict, Tuple, Optional, Union, Any
+from typing import Dict, Mapping, Tuple, Optional, Union, Any
 from pathlib import Path
 
 from . import errors
