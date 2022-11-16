@@ -122,6 +122,10 @@ jobs:
           # https://github.com/RobertCraigie/pyright-python/issues/123
           - docker-platform: linux/arm64
             python-os-distro: alpine
+          # This is currently way too slow, takes ~30 minutes to complete
+          # TODO: investigate
+          - docker-platform: linux/arm64
+            python-os-distro: slim-bullseye
     steps:
       - uses: actions/checkout@v3
 
