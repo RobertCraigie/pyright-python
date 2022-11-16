@@ -5,6 +5,7 @@ import re
 import sys
 import shutil
 import logging
+import platform
 import subprocess
 from functools import lru_cache
 from typing import Dict, Mapping, Tuple, Optional, Union, Any
@@ -12,13 +13,13 @@ from pathlib import Path
 
 from . import errors
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool, maybe_decode
+from .utils import get_env_dir, env_to_bool, get_bin_dir, maybe_decode
 
 
 log: logging.Logger = logging.getLogger(__name__)
 
 ENV_DIR: Path = get_env_dir()
-BINARIES_DIR: Path = ENV_DIR / 'bin'
+BINARIES_DIR: Path = get_bin_dir(env_dir=ENV_DIR)
 USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
 VERSION_RE = re.compile(r'\d+\.\d+\.\d+')
 
@@ -35,21 +36,30 @@ def _ensure_available(target: Target) -> Binary:
     return Binary(path=_ensure_node_env(target), strategy=Strategy.NODEENV)
 
 
+def _is_windows() -> bool:
+    return platform.system().lower() == 'windows'
+
+
+def _postfix_for_target(target: Target) -> str:
+    if not _is_windows():
+        return ''
+
+    if target == 'node':
+        return '.exe'
+    return '.cmd'
+
+
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
-    if not ENV_DIR.exists():
-        log.debug('Environment not found at %s', ENV_DIR)
-        _install_node_env()
-    else:
-        log.debug('Environment exists at %s', ENV_DIR)
+    path = BINARIES_DIR.joinpath(target + _postfix_for_target(target))
 
-    # Ensure the target binary exists.
-    # This shouldn't really happen but there could
-    # be cases where our env dir exists but without the
-    # binary so we might as well just double check.
-    path = BINARIES_DIR.joinpath(target)
-    if not path.exists():
+    log.debug('Using %s path for binary', path)
+
+    if path.exists():
+        log.debug('Binary at %s exists, skipping nodeenv installation', path)
+    else:
+        log.debug('Installing nodeenv as a binary at %s could not be found', path)
         _install_node_env()
 
     if not path.exists():
