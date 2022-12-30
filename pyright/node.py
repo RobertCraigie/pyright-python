@@ -183,7 +183,7 @@ def _update_path_env(
     if env is None:
         env = dict(os.environ)
 
-    log.debug('Attempting to preprend %s to the PATH', target_bin)
+    log.debug('Attempting to prepend %s to the PATH', target_bin)
     assert target_bin.exists(), f'Target directory {target_bin} does not exist'
 
     path = env.get('PATH', '') or os.environ.get('PATH', '')

@@ -72,7 +72,7 @@ def _should_warn_version(version: str, args: Tuple[object]) -> bool:
     # PYRIGHT_PYTHON_FORCE_VERSION to the new pyright version.
     # This should rarely happen as we make new releases very frequently after
     # pyright does. Also in order to correctly compare versions we would need an additional
-    # depdency. As such this is an acceptable bug.
+    # dependency. As such this is an acceptable bug.
     latest = get_latest_version()
     return latest is not None and latest != version
 
