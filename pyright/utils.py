@@ -29,6 +29,15 @@ def get_env_dir() -> Path:
     return Path(tempfile.gettempdir()) / f'pyright-python{suffix}' / 'env'
 
 
+def get_cache_dir() -> Path:
+    """Locate a user's cache directory, respects the XDG environment if present, otherwise defaults to `~/.cache`"""
+    xdg = os.environ.get('XDG_CACHE_HOME')
+    if xdg is not None:
+        return Path(xdg)
+    
+    return Path.home() / '.cache'
+
+
 def get_bin_dir(*, env_dir: Path) -> Path:
     name = platform.system().lower()
     if name == 'windows':

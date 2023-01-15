@@ -5,8 +5,7 @@ import subprocess
 from typing import List, NoReturn, Union, Tuple, Any
 
 from . import __pyright_version__, node
-from .utils import env_to_bool, get_latest_version
-from .errors import VersionCheckFailed
+from .utils import env_to_bool, get_latest_version, get_cache_dir
 
 
 __all__ = (
@@ -21,9 +20,14 @@ def main(args: List[str], **kwargs: Any) -> int:
     return run(*args, **kwargs).returncode
 
 
+CACHE_DIR = get_cache_dir() / 'pyright-python'
+
+
 def run(
     *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
+    CACHE_DIR.mkdir(exist_ok=True, parents=True)
+
     version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
     if version == 'latest':
         version = node.latest('pyright')
@@ -34,27 +38,26 @@ def run(
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
-    try:
-        npx = node.version('npx')
-    except VersionCheckFailed:
-        if not env_to_bool('PYRIGHT_PYTHON_IGNORE_NPX_CHECK', default=False):
-            raise
+    pkg_dir = CACHE_DIR / 'node_modules' / 'pyright'
+    current_version = node.get_pkg_version(pkg_dir / 'package.json')
 
-        log.debug('Ignoring failed version check for npx, defaulting to v7')
-        npx = (7,)
+    if current_version is None or current_version != version:
+        silent = '--outputjson' in args
+        node.run(
+            'npm',
+            'install',
+            f'pyright@{version}',
+            cwd=str(CACHE_DIR),
+            check=True,
+            stdout=subprocess.PIPE if silent else sys.stdout,
+            stderr=subprocess.PIPE if silent else sys.stderr,
+        )
 
-    if npx[0] >= 7:
-        pre_args = ['--yes']
+    script = pkg_dir / 'index.js'
+    if not script.exists():
+        raise RuntimeError(f'Expected CLI entrypoint: {script} to exist')
 
-        if not env_to_bool('PYRIGHT_PYTHON_VERBOSE', default=False):
-            pre_args.insert(0, '--silent')
-    else:
-        pre_args = []
-
-    if args and pre_args:
-        pre_args = (*pre_args, '--')
-
-    return node.run('npx', *pre_args, f'pyright@{version}', *args, **kwargs)
+    return node.run('node', str(script), '--', *args, **kwargs)
 
 
 def _should_warn_version(version: str, args: Tuple[object]) -> bool:
