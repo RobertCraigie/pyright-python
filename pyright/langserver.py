@@ -7,7 +7,7 @@ from getpass import getuser
 from pathlib import Path
 from typing import Any, NoReturn, Union
 
-from . import node
+from . import node, __pyright_version__
 
 
 def get_temp_dir() -> Path:
@@ -32,7 +32,7 @@ def run(
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     TEMP_DIR.mkdir(exist_ok=True, parents=True)
 
-    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
     if version is None:
         version = node.latest('pyright')
 
