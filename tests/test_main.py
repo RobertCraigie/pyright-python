@@ -6,9 +6,6 @@ import subprocess
 from pathlib import Path
 from packaging import version
 
-import pytest
-from pytest_subprocess import FakeProcess
-
 import pyright
 from pyright.utils import maybe_decode
 
@@ -145,18 +142,3 @@ def test_ignore_warnings_config_no_warning() -> None:
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
 
-
-def test_ignoring_version_check(
-    npx: str,
-    fake_process: FakeProcess,
-) -> None:
-    fake_process.register_subprocess(
-        [npx, "--version"], stdout='hello world'
-    )  # pyright: reportUnknownMemberType=false
-    fake_process.allow_unregistered(True)
-
-    with pytest.raises(pyright.errors.VersionCheckFailed):
-        pyright.run('--help', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    os.environ['PYRIGHT_PYTHON_IGNORE_NPX_CHECK'] = '1'
-    pyright.run('--help', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

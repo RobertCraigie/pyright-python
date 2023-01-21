@@ -1,25 +1,11 @@
-import os
+from __future__ import annotations
+
 import subprocess
 import sys
-import json
-import tempfile
-from getpass import getuser
-from pathlib import Path
-from typing import Any, NoReturn, Union
+from typing import Any, NoReturn
 
 from . import node
-
-
-def get_temp_dir() -> Path:
-    try:
-        suffix = f'.{getuser()}'
-    except Exception:
-        suffix = ''
-
-    return Path(tempfile.gettempdir()) / f'pyright-python-langserver{suffix}'
-
-
-TEMP_DIR = get_temp_dir()
+from ._utils import install_pyright
 
 
 def main(*args: str, **kwargs: Any) -> int:
@@ -29,27 +15,13 @@ def main(*args: str, **kwargs: Any) -> int:
 def run(
     *args: str,
     **kwargs: Any,
-) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
-    TEMP_DIR.mkdir(exist_ok=True, parents=True)
-
-    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
-    if version is None:
-        version = node.latest('pyright')
-
-    pkg = TEMP_DIR / 'node_modules' / 'pyright' / 'package.json'
-    if pkg.exists():
-        current_version = json.loads(pkg.read_text()).get('version')
-    else:
-        current_version = None
-
-    # TODO: use the same install location as the pyright CLI
-    if current_version is None or current_version != version:
-        node.run('npm', 'install', f'pyright@{version}', cwd=str(TEMP_DIR), check=True)
-
-    binary = TEMP_DIR / 'node_modules' / 'pyright' / 'langserver.index.js'
+) -> subprocess.CompletedProcess[bytes] | subprocess.CompletedProcess[str]:
+    pkg_dir = install_pyright(args)
+    binary = pkg_dir / 'langserver.index.js'
     if not binary.exists():
         raise RuntimeError(f'Expected language server entrypoint: {binary} to exist')
 
+    # TODO: remove `--`?
     return node.run('node', str(binary), '--', *args, **kwargs)
 
 
