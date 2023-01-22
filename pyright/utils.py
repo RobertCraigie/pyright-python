@@ -1,10 +1,8 @@
 import os
 import sys
 import logging
-import tempfile
 import platform
 from pathlib import Path
-from getpass import getuser
 from functools import lru_cache
 from typing import Union, Optional
 
