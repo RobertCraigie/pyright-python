@@ -16,18 +16,15 @@ log: logging.Logger = logging.getLogger(__name__)
 
 
 def get_env_dir() -> Path:
-    """Returns the directory that contains the nodeenv"""
+    """Returns the directory that contains the nodeenv.
+
+    This first respects the `PYRIGHT_PYTHON_ENV_DIR` variable and delegates to `get_cache_dir()` otherwise.
+    """
     env_dir = os.environ.get('PYRIGHT_PYTHON_ENV_DIR')
     if env_dir is not None:
         return Path(env_dir)
 
-    try:
-        suffix = f'.{getuser()}'
-    except Exception:
-        suffix = ''
-
-    return Path(tempfile.gettempdir()) / f'pyright-python{suffix}' / 'env'
-
+    return get_cache_dir()
 
 def get_cache_dir() -> Path:
     """Locate a user's cache directory, respects the XDG environment if present, otherwise defaults to `~/.cache`"""
