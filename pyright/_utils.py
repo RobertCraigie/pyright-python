@@ -2,14 +2,25 @@ from __future__ import annotations
 
 import os
 import sys
+import json
 import subprocess
 from pathlib import Path
+from typing import Any
 
 from . import __pyright_version__, node
 from .utils import env_to_bool, get_latest_version, get_cache_dir
 
 
-CACHE_DIR = get_cache_dir() / 'pyright-python'
+ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python'
+DEFAULT_PACKAGE_JSON: dict[str, Any] = {
+    'name': 'pyright-binaries',
+    'version': '1.0.0',
+    'private': True,
+    'description': 'Cache directory created by Pyright Python to store downloads of the NPM package',
+    'main': 'node_modules/pyright/index.js',
+    'author': 'RobertCraigie',
+    'license': 'Apache-2.0',
+}
 
 
 def install_pyright(args: tuple[object]) -> Path:
@@ -20,28 +31,38 @@ def install_pyright(args: tuple[object]) -> Path:
     This accepts a single argument which corresponds to the arguments given to the CLI / langserver
     which are used to determine whether or not certain warnings / logs will be printed.
     """
-    CACHE_DIR.mkdir(exist_ok=True, parents=True)
-
     version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
     if version == 'latest':
         version = node.latest('pyright')
     else:
         if _should_warn_version(version, args=args):
             print(
-                f'WARNING: there is a new pyright version available (v{__pyright_version__} -> v{get_latest_version()}).\n'
+                f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
-    pkg_dir = CACHE_DIR / 'node_modules' / 'pyright'
+    cache_dir = ROOT_CACHE_DIR / version
+    cache_dir.mkdir(exist_ok=True, parents=True)
+
+    pkg_dir = cache_dir / 'node_modules' / 'pyright'
+    package_json = cache_dir / 'package.json'
     current_version = node.get_pkg_version(pkg_dir / 'package.json')
 
     if current_version is None or current_version != version:
+        # We need to create a dummy `package.json` file so that `npm` doesn't try
+        # and search for it elsewhere.
+        #
+        # If it finds a different `package.json` file then the `pyright` package
+        # will be installed there instead of our cache directory.
+        if not package_json.exists():
+            package_json.write_text(json.dumps(DEFAULT_PACKAGE_JSON))
+
         silent = '--outputjson' in args
         node.run(
             'npm',
             'install',
             f'pyright@{version}',
-            cwd=str(CACHE_DIR),
+            cwd=str(cache_dir),
             check=True,
             stdout=subprocess.PIPE if silent else sys.stdout,
             stderr=subprocess.PIPE if silent else sys.stderr,
@@ -68,5 +89,3 @@ def _should_warn_version(version: str, args: tuple[object]) -> bool:
     # dependency. As such this is an acceptable bug.
     latest = get_latest_version()
     return latest is not None and latest != version
-
-

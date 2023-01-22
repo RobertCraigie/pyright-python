@@ -184,9 +184,11 @@ def get_pkg_version(pkg: Path) -> str | None:
         data = json.loads(pkg.read_text())
     except Exception:
         # TODO: test this
-        log.debug('Ignoring error while reading/parsing the %s file', pkg, exc_info=True)
+        log.debug(
+            'Ignoring error while reading/parsing the %s file', pkg, exc_info=True
+        )
         return None
-    
+
     return data.get('version')
 
 

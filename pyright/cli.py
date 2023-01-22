@@ -27,7 +27,7 @@ def run(
     if not script.exists():
         raise RuntimeError(f'Expected CLI entrypoint: {script} to exist')
 
-    return node.run('node', str(script),  *args, **kwargs)
+    return node.run('node', str(script), *args, **kwargs)
 
 
 def entrypoint() -> NoReturn:

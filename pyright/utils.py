@@ -34,7 +34,7 @@ def get_cache_dir() -> Path:
     xdg = os.environ.get('XDG_CACHE_HOME')
     if xdg is not None:
         return Path(xdg)
-    
+
     return Path.home() / '.cache'
 
 

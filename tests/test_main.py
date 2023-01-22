@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 import sys
@@ -5,9 +7,13 @@ import json
 import subprocess
 from pathlib import Path
 from packaging import version
+from typing import TYPE_CHECKING
 
 import pyright
 from pyright.utils import maybe_decode
+
+if TYPE_CHECKING:
+    from _pytest.monkeypatch import MonkeyPatch
 
 
 VERSION_REGEX = re.compile(r'pyright (?P<version>\d+\.\d+\.\d+)')
@@ -142,3 +148,19 @@ def test_ignore_warnings_config_no_warning() -> None:
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
 
+
+def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """The CLI can be installed successfully when there is a `package.json` file
+    in a parent directory.
+    """
+    tmp_path.joinpath('package.json').write_text('{"name": "another package.json"}')
+
+    cache_dir = tmp_path / 'foo' / 'bar'
+
+    monkeypatch.setenv('XDG_CACHE_HOME', str(cache_dir))
+
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+    )
+    assert proc.returncode == 0
