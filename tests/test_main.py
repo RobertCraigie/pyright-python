@@ -10,7 +10,10 @@ from packaging import version
 from typing import TYPE_CHECKING
 
 import pyright
+from pyright import __pyright_version__
 from pyright.utils import maybe_decode
+
+from tests.utils import assert_matches
 
 if TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch
@@ -26,9 +29,8 @@ def test_module_invocation() -> None:
         stdout=subprocess.PIPE,
     )
     assert proc.returncode == 0
-    output = proc.stdout.decode('utf-8')
-    match = VERSION_REGEX.match(output)
-    assert match is not None
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    assert match.group(1) == __pyright_version__
 
 
 def test_module_invocation_version() -> None:
@@ -39,9 +41,7 @@ def test_module_invocation_version() -> None:
         env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='1.1.223'),
     )
     assert proc.returncode == 0
-    output = proc.stdout.decode('utf-8')
-    match = VERSION_REGEX.match(output)
-    assert match is not None
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
     assert match.group(1) == '1.1.223'
 
 
@@ -53,10 +53,8 @@ def test_module_invocation_latest_version() -> None:
         env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='latest'),
     )
     assert proc.returncode == 0
-    output = proc.stdout.decode('utf-8')
-    match = VERSION_REGEX.match(output)
-    assert match is not None
-    assert version.parse(match.group(1)) >= version.parse(pyright.__pyright_version__)
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    assert version.parse(match.group(1)) >= version.parse(__pyright_version__)
 
 
 def test_entry_point() -> None:
@@ -67,8 +65,8 @@ def test_entry_point() -> None:
     )
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
-    match = VERSION_REGEX.match(output)
-    assert match is not None
+    match = assert_matches(VERSION_REGEX, output)
+    assert match.group(1) == __pyright_version__
 
 
 def test_long_arguments(tmp_path: Path) -> None:
