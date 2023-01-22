@@ -154,7 +154,7 @@ def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) ->
     tmp_path.joinpath('package.json').write_text('{"name": "another package.json"}')
 
     cache_dir = tmp_path / 'foo' / 'bar'
-    cache_dir.mkdir(exist_ok=True)
+    cache_dir.mkdir(exist_ok=True, parents=True)
 
     monkeypatch.setenv('XDG_CACHE_HOME', str(cache_dir))
 
