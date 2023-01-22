@@ -76,9 +76,7 @@ def _should_warn_version(version: str, args: tuple[object]) -> bool:
         # If this flag is set then the output must be machine parseable
         return False
 
-    if env_to_bool('PYRIGHT_PYTHON_VERBOSE', default=False) or env_to_bool(
-        'PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False
-    ):
+    if env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
         return False
 
     # NOTE: there is an edge case here where a new pyright version has been released

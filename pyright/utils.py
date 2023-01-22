@@ -26,6 +26,7 @@ def get_env_dir() -> Path:
 
     return get_cache_dir()
 
+
 def get_cache_dir() -> Path:
     """Locate a user's cache directory, respects the XDG environment if present, otherwise defaults to `~/.cache`"""
     xdg = os.environ.get('XDG_CACHE_HOME')
