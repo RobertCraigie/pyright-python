@@ -22,7 +22,7 @@ def get_env_dir() -> Path:
     if env_dir is not None:
         return Path(env_dir)
 
-    return get_cache_dir()
+    return get_cache_dir() / 'pyright-python' / 'nodeenv'
 
 
 def get_cache_dir() -> Path:
