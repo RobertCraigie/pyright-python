@@ -61,7 +61,7 @@ venv = ".venv"
 
 ## How Pyright for Python Works
 
-This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
+This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv), then install the pyright npm package using `npm` and finally, run the downloaded JS with `node`.
 
 ## Automatically keeping pyright up to date
 
@@ -85,6 +85,12 @@ Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`, `late
 
 By default, Pyright for Python disables npm error messages, if you want to display the npm error messages then set `PYRIGHT_PYTHON_VERBOSE` to any truthy value.
 
+### Modify NPM Package Location
+
+By default, Pyright for Python respects the `XDG_CACHE_HOME` environment variable and otherwise defaults to `~/.cache`.
+
+If you need to use a different directory you can set the `XDG_CACHE_HOME` environment variable.
+
 ### Force Node Env
 
 Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on, or true.
@@ -100,7 +106,7 @@ Set `PYRIGHT_PYTHON_IGNORE_WARNINGS` to a truthy value, e.g. 1, t, on, or true.
 
 Pyright for Python will print warnings for the following case(s)
 
-- Using [nodeenv](https://github.com/ekalinin/nodeenv) without bash available
+- There is a new Pyright version available.
 
 ## Contributing
 

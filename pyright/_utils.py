@@ -55,7 +55,7 @@ def install_pyright(args: tuple[object]) -> Path:
         # If it finds a different `package.json` file then the `pyright` package
         # will be installed there instead of our cache directory.
         if not package_json.exists():
-            package_json.write_text(json.dumps(DEFAULT_PACKAGE_JSON))
+            package_json.write_text(json.dumps(DEFAULT_PACKAGE_JSON, indent=2))
 
         silent = '--outputjson' in args
         node.run(
