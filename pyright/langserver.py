@@ -33,7 +33,7 @@ def run(
     TEMP_DIR.mkdir(exist_ok=True, parents=True)
 
     version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
-    if version is None:
+    if version == 'latest':
         version = node.latest('pyright')
 
     pkg = TEMP_DIR / 'node_modules' / 'pyright' / 'package.json'
