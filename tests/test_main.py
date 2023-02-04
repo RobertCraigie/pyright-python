@@ -11,6 +11,7 @@ from pytest_subprocess import FakeProcess
 
 import pyright
 from pyright.utils import maybe_decode
+from pyright import __pyright_version__
 
 
 VERSION_REGEX = re.compile(r'pyright (?P<version>\d+\.\d+\.\d+)')
@@ -160,3 +161,19 @@ def test_ignoring_version_check(
 
     os.environ['PYRIGHT_PYTHON_IGNORE_NPX_CHECK'] = '1'
     pyright.run('--help', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
+def test_user_special_characters() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        env={
+            **os.environ,
+            'LOGNAME': 'alice@example.com',
+        },
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert str(__pyright_version__) in output
