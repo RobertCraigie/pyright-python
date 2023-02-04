@@ -8,4 +8,3 @@ def get_tmp_path_suffix() -> str:
         return ''
 
     return f'.{hash(user)}'
-

@@ -21,7 +21,9 @@ def get_env_dir() -> Path:
     if env_dir is not None:
         return Path(env_dir)
 
-    return Path(tempfile.gettempdir()) / f'pyright-python{get_tmp_path_suffix()}' / 'env'
+    return (
+        Path(tempfile.gettempdir()) / f'pyright-python{get_tmp_path_suffix()}' / 'env'
+    )
 
 
 def get_bin_dir(*, env_dir: Path) -> Path:

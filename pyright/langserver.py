@@ -11,7 +11,10 @@ from ._utils import get_tmp_path_suffix
 
 
 def get_temp_dir() -> Path:
-    return Path(tempfile.gettempdir()) / f'pyright-python-langserver{get_tmp_path_suffix()}'
+    return (
+        Path(tempfile.gettempdir())
+        / f'pyright-python-langserver{get_tmp_path_suffix()}'
+    )
 
 
 TEMP_DIR = get_temp_dir()
