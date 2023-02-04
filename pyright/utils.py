@@ -4,11 +4,11 @@ import logging
 import tempfile
 import platform
 from pathlib import Path
-from getpass import getuser
 from functools import lru_cache
 from typing import Union, Optional
 
 from . import _mureq as mureq
+from ._utils import get_tmp_path_suffix
 
 
 PYPI_API_URL: str = 'https://pypi.org/pypi/pyright/json'
@@ -21,12 +21,9 @@ def get_env_dir() -> Path:
     if env_dir is not None:
         return Path(env_dir)
 
-    try:
-        suffix = f'.{getuser()}'
-    except Exception:
-        suffix = ''
-
-    return Path(tempfile.gettempdir()) / f'pyright-python{suffix}' / 'env'
+    return (
+        Path(tempfile.gettempdir()) / f'pyright-python{get_tmp_path_suffix()}' / 'env'
+    )
 
 
 def get_bin_dir(*, env_dir: Path) -> Path:

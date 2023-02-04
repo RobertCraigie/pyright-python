@@ -3,20 +3,18 @@ import subprocess
 import sys
 import json
 import tempfile
-from getpass import getuser
 from pathlib import Path
 from typing import Any, NoReturn, Union
 
 from . import node, __pyright_version__
+from ._utils import get_tmp_path_suffix
 
 
 def get_temp_dir() -> Path:
-    try:
-        suffix = f'.{getuser()}'
-    except Exception:
-        suffix = ''
-
-    return Path(tempfile.gettempdir()) / f'pyright-python-langserver{suffix}'
+    return (
+        Path(tempfile.gettempdir())
+        / f'pyright-python-langserver{get_tmp_path_suffix()}'
+    )
 
 
 TEMP_DIR = get_temp_dir()
