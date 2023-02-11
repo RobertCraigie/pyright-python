@@ -42,7 +42,15 @@ def run(
 
     # TODO: use the same install location as the pyright CLI
     if current_version is None or current_version != version:
-        node.run('npm', 'init', "-y", cwd=str(TEMP_DIR), check=True)
+        node.run(
+            'npm',
+            'init',
+            '-y',
+            cwd=str(TEMP_DIR),
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
         node.run('npm', 'install', f'pyright@{version}', cwd=str(TEMP_DIR), check=True)
 
     binary = TEMP_DIR / 'node_modules' / 'pyright' / 'langserver.index.js'
