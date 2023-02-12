@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import subprocess
 import sys
+import subprocess
 from typing import Any, NoReturn
 
 from . import node

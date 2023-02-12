@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 import pyright
 from pyright import __pyright_version__
 from pyright.utils import maybe_decode
+from pyright import __pyright_version__
 
 from tests.utils import assert_matches
 
@@ -145,6 +146,22 @@ def test_ignore_warnings_config_no_warning() -> None:
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
+
+
+def test_user_special_characters() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        env={
+            **os.environ,
+            'LOGNAME': 'alice@example.com',
+        },
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert str(__pyright_version__) in output
 
 
 def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:

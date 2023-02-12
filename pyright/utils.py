@@ -7,6 +7,7 @@ from functools import lru_cache
 from typing import Union, Optional
 
 from . import _mureq as mureq
+from ._utils import get_tmp_path_suffix
 
 
 PYPI_API_URL: str = 'https://pypi.org/pypi/pyright/json'
