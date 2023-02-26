@@ -173,6 +173,7 @@ def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) ->
         # hack to avoid WinError 206
         tmp_path = tmp_path.parent.parent / 'abc'
 
+    tmp_path.mkdir(exist_ok=True, parents=True)
     tmp_path.joinpath('package.json').write_text('{"name": "another package.json"}')
 
     cache_dir = tmp_path / 'foo' / 'bar'

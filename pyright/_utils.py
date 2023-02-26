@@ -11,7 +11,7 @@ from . import __pyright_version__, node
 from .utils import env_to_bool, get_latest_version, get_cache_dir
 
 
-ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python' / 'packages'
+ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python'
 DEFAULT_PACKAGE_JSON: dict[str, Any] = {
     'name': 'pyright-binaries',
     'version': '1.0.0',
