@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import subprocess
@@ -46,4 +47,5 @@ def test_only_json_output() -> None:
     assert proc.stdout is not None
 
     stdout = proc.stdout.read().decode('utf-8')
-    assert stdout == ''
+    for line in stdout.splitlines():
+        json.loads(line)
