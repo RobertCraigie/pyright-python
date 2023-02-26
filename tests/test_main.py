@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import json
+import platform
 import subprocess
 from pathlib import Path
 from packaging import version
@@ -168,6 +169,10 @@ def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) ->
     """The CLI can be installed successfully when there is a `package.json` file
     in a parent directory.
     """
+    if platform.system() == 'Windows':
+        # hack to avoid WinError 206
+        tmp_path = tmp_path.parent.parent / 'abc'
+
     tmp_path.joinpath('package.json').write_text('{"name": "another package.json"}')
 
     cache_dir = tmp_path / 'foo' / 'bar'
