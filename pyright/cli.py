@@ -22,7 +22,7 @@ def main(args: List[str], **kwargs: Any) -> int:
 def run(
     *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
-    pkg_dir = install_pyright(args)
+    pkg_dir = install_pyright(args, quiet=None)
     script = pkg_dir / 'index.js'
     if not script.exists():
         raise RuntimeError(f'Expected CLI entrypoint: {script} to exist')

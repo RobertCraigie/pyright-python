@@ -23,7 +23,7 @@ DEFAULT_PACKAGE_JSON: dict[str, Any] = {
 }
 
 
-def install_pyright(args: tuple[object]) -> Path:
+def install_pyright(args: tuple[object], *, quiet: bool | None) -> Path:
     """Internal helper function to install the Pyright npm package to a cache.
 
     This returns the path to the installed package.
@@ -35,7 +35,7 @@ def install_pyright(args: tuple[object]) -> Path:
     if version == 'latest':
         version = node.latest('pyright')
     else:
-        if _should_warn_version(version, args=args):
+        if _should_warn_version(version, args=args, quiet=quiet):
             print(
                 f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
@@ -71,7 +71,16 @@ def install_pyright(args: tuple[object]) -> Path:
     return pkg_dir
 
 
-def _should_warn_version(version: str, args: tuple[object]) -> bool:
+def _should_warn_version(
+    version: str,
+    *,
+    args: tuple[object],
+    quiet: bool | None,
+) -> bool:
+    if quiet:
+        # This flag is set by the language server as the output must always be machine parseable
+        return False
+
     if '--outputjson' in args:
         # If this flag is set then the output must be machine parseable
         return False

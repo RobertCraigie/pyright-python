@@ -16,7 +16,7 @@ def run(
     *args: str,
     **kwargs: Any,
 ) -> subprocess.CompletedProcess[bytes] | subprocess.CompletedProcess[str]:
-    pkg_dir = install_pyright(args)
+    pkg_dir = install_pyright(args, quiet=True)
     binary = pkg_dir / 'langserver.index.js'
     if not binary.exists():
         raise RuntimeError(f'Expected language server entrypoint: {binary} to exist')

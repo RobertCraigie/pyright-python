@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 
 
@@ -31,3 +32,18 @@ def test_user_special_characters() -> None:
     assert proc.returncode == 1
     output = proc.stdout.decode('utf-8')
     assert 'Connection input stream is not set' in output
+
+
+def test_only_json_output() -> None:
+    """The language server should only output valid JSON"""
+    proc = subprocess.Popen(
+        ['pyright-langserver', '--stdio'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    time.sleep(2)
+    proc.kill()
+    assert proc.stdout is not None
+
+    stdout = proc.stdout.read().decode('utf-8')
+    assert stdout == ''
