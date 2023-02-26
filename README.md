@@ -87,9 +87,12 @@ By default, Pyright for Python disables npm error messages, if you want to displ
 
 ### Modify NPM Package Location
 
-By default, Pyright for Python respects the `XDG_CACHE_HOME` environment variable and otherwise defaults to `~/.cache`.
+Pyright for Python will resolve the root cache directory by checking the following environment variables, in order:
 
-If you need to use a different directory you can set the `XDG_CACHE_HOME` environment variable.
+- `PYRIGHT_PYTHON_CACHE_DIR`
+- `XDG_CACHE_HOME`
+
+If neither of them are set it defaults to `~/.cache`
 
 ### Force Node Env
 
