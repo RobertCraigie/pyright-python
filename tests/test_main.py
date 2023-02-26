@@ -173,7 +173,7 @@ def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) ->
     cache_dir = tmp_path / 'foo' / 'bar'
     cache_dir.mkdir(exist_ok=True, parents=True)
 
-    monkeypatch.setenv('XDG_CACHE_HOME', str(cache_dir))
+    monkeypatch.setenv('PYRIGHT_PYTHON_CACHE_DIR', str(cache_dir))
 
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],

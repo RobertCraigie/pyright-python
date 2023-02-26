@@ -26,6 +26,10 @@ def get_env_dir() -> Path:
 
 def get_cache_dir() -> Path:
     """Locate a user's cache directory, respects the XDG environment if present, otherwise defaults to `~/.cache`"""
+    custom = os.environ.get('PYRIGHT_PYTHON_CACHE_DIR')
+    if custom is not None:
+        return Path(custom)
+
     xdg = os.environ.get('XDG_CACHE_HOME')
     if xdg is not None:
         return Path(xdg)
