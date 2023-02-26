@@ -50,5 +50,5 @@ def test_only_json_output() -> None:
     for line in stdout.splitlines():
         # I'm not sure why there is a Content-Length line output sometimes.
         # It doesn't seem to be something we're outputting anywhere...
-        if not line.startswith('Content-Length:'):
+        if line and not line.startswith('Content-Length:'):
             json.loads(line)
