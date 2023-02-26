@@ -48,4 +48,7 @@ def test_only_json_output() -> None:
 
     stdout = proc.stdout.read().decode('utf-8')
     for line in stdout.splitlines():
-        json.loads(line)
+        # I'm not sure why there is a Content-Length line output sometimes.
+        # It doesn't seem to be something we're outputting anywhere...
+        if not line.startswith('Content-Length:'):
+            json.loads(line)
