@@ -1,4 +1,5 @@
 from getpass import getuser
+import hashlib
 
 
 def get_tmp_path_suffix() -> str:
@@ -7,4 +8,4 @@ def get_tmp_path_suffix() -> str:
     except Exception:
         return ''
 
-    return f'.{hash(user)}'
+    return f'.{hashlib.md5(user.encode()).hexdigest()}'
