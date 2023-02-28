@@ -61,7 +61,7 @@ venv = ".venv"
 
 ## How Pyright for Python Works
 
-This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv) and then install the pyright npm package using `npx`.
+This project works by first checking if node is in the `PATH`. If it is not, then we download node at runtime using [nodeenv](https://github.com/ekalinin/nodeenv), then install the pyright npm package using `npm` and finally, run the downloaded JS with `node`.
 
 ## Automatically keeping pyright up to date
 
@@ -85,6 +85,15 @@ Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`, `late
 
 By default, Pyright for Python disables npm error messages, if you want to display the npm error messages then set `PYRIGHT_PYTHON_VERBOSE` to any truthy value.
 
+### Modify NPM Package Location
+
+Pyright for Python will resolve the root cache directory by checking the following environment variables, in order:
+
+- `PYRIGHT_PYTHON_CACHE_DIR`
+- `XDG_CACHE_HOME`
+
+If neither of them are set it defaults to `~/.cache`
+
 ### Force Node Env
 
 Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on, or true.
@@ -100,13 +109,7 @@ Set `PYRIGHT_PYTHON_IGNORE_WARNINGS` to a truthy value, e.g. 1, t, on, or true.
 
 Pyright for Python will print warnings for the following case(s)
 
-- Using [nodeenv](https://github.com/ekalinin/nodeenv) without bash available
-
-### Disable NPX Version Check
-
-By default, Pyright for Python checks the version of the resolved `npx` binary, in some cases this [can cause an error](https://github.com/RobertCraigie/pyright-python/issues/56).
-
-If this is the case for you, then you can disable the version check by setting the environment variable `PYRIGHT_PYTHON_IGNORE_NPX_CHECK` to any truthy value, e.g. 1, t, on or true.
+- There is a new Pyright version available.
 
 ## Contributing
 

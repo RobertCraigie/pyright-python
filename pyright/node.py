@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import re
 import sys
+import json
 import shutil
 import logging
 import platform
@@ -169,6 +170,26 @@ def get_env_variables() -> Dict[str, Any]:
         'NPM_CONFIG_PREFIX': str(ENV_DIR),
         'npm_config_prefix': str(ENV_DIR),
     }
+
+
+def get_pkg_version(pkg: Path) -> str | None:
+    """Given a path to a `package.json` file, parse it and returns the `version` property
+
+    Returns `None` if the version could not be resolved for any reason.
+    """
+    if not pkg.exists():
+        return None
+
+    try:
+        data = json.loads(pkg.read_text())
+    except Exception:
+        # TODO: test this
+        log.debug(
+            'Ignoring error while reading/parsing the %s file', pkg, exc_info=True
+        )
+        return None
+
+    return data.get('version')
 
 
 def _update_path_env(

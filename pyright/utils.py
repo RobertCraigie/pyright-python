@@ -1,29 +1,40 @@
 import os
 import sys
 import logging
-import tempfile
 import platform
 from pathlib import Path
 from functools import lru_cache
 from typing import Union, Optional
 
 from . import _mureq as mureq
-from ._utils import get_tmp_path_suffix
-
 
 PYPI_API_URL: str = 'https://pypi.org/pypi/pyright/json'
 log: logging.Logger = logging.getLogger(__name__)
 
 
 def get_env_dir() -> Path:
-    """Returns the directory that contains the nodeenv"""
+    """Returns the directory that contains the nodeenv.
+
+    This first respects the `PYRIGHT_PYTHON_ENV_DIR` variable and delegates to `get_cache_dir()` otherwise.
+    """
     env_dir = os.environ.get('PYRIGHT_PYTHON_ENV_DIR')
     if env_dir is not None:
         return Path(env_dir)
 
-    return (
-        Path(tempfile.gettempdir()) / f'pyright-python{get_tmp_path_suffix()}' / 'env'
-    )
+    return get_cache_dir() / 'pyright-python' / 'nodeenv'
+
+
+def get_cache_dir() -> Path:
+    """Locate a user's cache directory, respects the XDG environment if present, otherwise defaults to `~/.cache`"""
+    custom = os.environ.get('PYRIGHT_PYTHON_CACHE_DIR')
+    if custom is not None:
+        return Path(custom)
+
+    xdg = os.environ.get('XDG_CACHE_HOME')
+    if xdg is not None:
+        return Path(xdg)
+
+    return Path.home() / '.cache'
 
 
 def get_bin_dir(*, env_dir: Path) -> Path:
