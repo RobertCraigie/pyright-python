@@ -20,7 +20,9 @@ def tmp_path_fixture(tmp_path: Path) -> Iterator[Path]:
 
 @pytest.fixture(name='npx', scope='session')
 def npx_fixture() -> str:
-    return str(node._ensure_available('npx').path)  # pyright: reportPrivateUsage=false
+    return str(
+        node._ensure_available('npx').path  # pyright: ignore[reportPrivateUsage]
+    )
 
 
 @pytest.fixture(autouse=True)
