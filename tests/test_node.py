@@ -50,7 +50,7 @@ def test_target_version_not_found(
 ) -> None:
     fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
         [npx, "--version"], stdout='hello world'
-    )  
+    )
 
     with pytest.raises(pyright.errors.VersionCheckFailed) as exc:
         node.version('npx')
