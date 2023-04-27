@@ -37,9 +37,9 @@ def test_target_version(
     output: bytes,
     version: Tuple[int, ...],
 ) -> None:
-    fake_process.register_subprocess(
+    fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
         [npx, "--version"], stdout=output
-    )  # pyright: reportUnknownMemberType=false
+    )
     assert node.version('npx') == version
 
 
@@ -48,9 +48,9 @@ def test_target_version_not_found(
     fake_process: FakeProcess,
     capsys: 'CaptureFixture[str]',
 ) -> None:
-    fake_process.register_subprocess(
+    fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
         [npx, "--version"], stdout='hello world'
-    )  # pyright: reportUnknownMemberType=false
+    )  
 
     with pytest.raises(pyright.errors.VersionCheckFailed) as exc:
         node.version('npx')
