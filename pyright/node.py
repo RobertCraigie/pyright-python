@@ -91,6 +91,60 @@ def _install_node_env() -> None:
     subprocess.run(args, check=True)
 
 
+def _run_gracefully(
+    *popen_args: Any,
+    input: Optional[str] = None,
+    capture_output: bool = False,
+    timeout: Optional[float] = None,
+    check: bool = False,
+    **kwargs: Any,
+) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
+    """Similar to subprocess.run, but mindful of potential errors."""
+
+    # Because subprocess doesn't provide any better interface, to keep things compatible
+    # this re-implements almost everything in subprocess.run
+    if input is not None:
+        if kwargs.get('stdin') is not None:
+            raise ValueError('stdin and input arguments may not both be used.')
+        kwargs['stdin'] = subprocess.PIPE
+
+    if capture_output:
+        if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+            raise ValueError(
+                'stdout and stderr arguments may not be used with capture_output.'
+            )
+        kwargs['stdout'] = subprocess.PIPE
+        kwargs['stderr'] = subprocess.PIPE
+
+    log.debug(f"Gracefully running command {popen_args}")
+    process = subprocess.Popen(*popen_args, **kwargs)
+    try:
+        stdout, stderr = process.communicate(input, timeout=timeout)
+        return_code = process.wait()
+    except Exception as exc:
+        log.debug("Caught exception while running command, handling gracefully.")
+        try:
+            print("\nTerminating process, please wait for cleanup to finish...")
+            process.terminate()
+            return_code = process.wait()
+            stdout, stderr = process.communicate()
+            print("Process terminated")
+        except Exception as exc2:
+            log.debug(
+                "Caught another exception during graceful termination, force-killing process."
+            )
+            process.kill()
+            process.wait()
+            print("\nKilling child process without cleanup. This may lead to issues.")
+            raise exc2 from exc
+
+    log.debug(f"Process finished with exit code {return_code}.")
+    result = subprocess.CompletedProcess(process.args, return_code, stdout, stderr)
+    if check:
+        result.check_returncode()
+    return result
+
+
 def run(
     target: Target, *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
@@ -112,7 +166,7 @@ def run(
         raise RuntimeError(f'Unknown strategy: {binary.strategy}')
 
     log.debug('Running node command with args: %s', node_args)
-    return subprocess.run(node_args, env=env, **kwargs)
+    return _run_gracefully(node_args, env=env, **kwargs)
 
 
 def version(target: Target) -> Tuple[int, ...]:
