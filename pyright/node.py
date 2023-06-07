@@ -9,7 +9,7 @@ import logging
 import platform
 import subprocess
 from functools import lru_cache
-from typing import Dict, Mapping, Tuple, Optional, Union, Any
+from typing import Dict, Mapping, Tuple, Optional, Union, Any, cast
 from pathlib import Path
 
 from . import errors
@@ -112,7 +112,10 @@ def run(
         raise RuntimeError(f'Unknown strategy: {binary.strategy}')
 
     log.debug('Running node command with args: %s', node_args)
-    return subprocess.run(node_args, env=env, **kwargs)
+    return cast(
+        'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
+        subprocess.run(node_args, env=env, **kwargs),
+    )
 
 
 def version(target: Target) -> Tuple[int, ...]:
