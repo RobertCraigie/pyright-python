@@ -22,6 +22,7 @@ log: logging.Logger = logging.getLogger(__name__)
 ENV_DIR: Path = get_env_dir()
 BINARIES_DIR: Path = get_bin_dir(env_dir=ENV_DIR)
 USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
+NODE_VERSION = os.environ.get('PYRIGHT_PYTHON_NODE_VERSION', default=None)
 VERSION_RE = re.compile(r'\d+\.\d+\.\d+')
 
 
@@ -57,7 +58,7 @@ def _ensure_node_env(target: Target) -> Path:
 
     log.debug('Using %s path for binary', path)
 
-    if path.exists():
+    if path.exists() and not NODE_VERSION:
         log.debug('Binary at %s exists, skipping nodeenv installation', path)
     else:
         log.debug('Installing nodeenv as a binary at %s could not be found', path)
@@ -86,7 +87,11 @@ def _get_global_binary(target: Target) -> Optional[Path]:
 
 def _install_node_env() -> None:
     log.debug('Installing nodeenv to %s', ENV_DIR)
-    args = [sys.executable, '-m', 'nodeenv', str(ENV_DIR)]
+    args = [sys.executable, '-m', 'nodeenv']
+    if NODE_VERSION:
+        log.debug(f"Using user specified node version: {NODE_VERSION}")
+        args += ["--node", NODE_VERSION, "--force"]
+    args.append(str(ENV_DIR))
     log.debug('Running command with args: %s', args)
     subprocess.run(args, check=True)
 
