@@ -75,8 +75,8 @@ def test_run_env_argument(tmp_path: Path) -> None:
     assert maybe_decode(proc.stdout) == 'hello!\n'
 
 
-@mock.patch('pyright.node.NODE_VERSION',  "13.1.0")
-@mock.patch('pyright.node.USE_GLOBAL_NODE',  False)
+@mock.patch('pyright.node.NODE_VERSION', "13.1.0")
+@mock.patch('pyright.node.USE_GLOBAL_NODE', False)
 def test_node_version_env(tmp_path: Path) -> None:
     """Ensure the `run()` function can accept an `env` argument."""
     proc = node.run(
@@ -86,7 +86,8 @@ def test_node_version_env(tmp_path: Path) -> None:
         stderr=subprocess.STDOUT,
     )
     assert proc.returncode == 0
-    assert maybe_decode(proc.stdout) == 'v13.1.0\n'
+    assert maybe_decode(proc.stdout).strip() == 'v13.1.0'
+
 
 def test_update_path_env(tmp_path: Path) -> None:
     """The _update_path_env() function correctly appends the target binary path to the PATH environment variable"""
