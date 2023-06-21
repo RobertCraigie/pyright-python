@@ -77,8 +77,8 @@ def test_run_env_argument(tmp_path: Path) -> None:
 
 @mock.patch('pyright.node.NODE_VERSION', "13.1.0")
 @mock.patch('pyright.node.USE_GLOBAL_NODE', False)
-def test_node_version_env(tmp_path: Path) -> None:
-    """Ensure the `run()` function can accept an `env` argument."""
+def test_node_version_env() -> None:
+    """Ensure the custom version is respected."""
     proc = node.run(
         'node',
         '--version',
