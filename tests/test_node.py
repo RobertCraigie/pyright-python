@@ -2,7 +2,7 @@ import os
 import subprocess
 from typing import Tuple, TYPE_CHECKING
 from pathlib import Path
-
+from unittest import mock
 import pytest
 from pytest_subprocess import FakeProcess
 
@@ -73,6 +73,20 @@ def test_run_env_argument(tmp_path: Path) -> None:
     )
     assert proc.returncode == 0
     assert maybe_decode(proc.stdout) == 'hello!\n'
+
+
+@mock.patch('pyright.node.NODE_VERSION', "13.1.0")
+@mock.patch('pyright.node.USE_GLOBAL_NODE', False)
+def test_node_version_env() -> None:
+    """Ensure the custom version is respected."""
+    proc = node.run(
+        'node',
+        '--version',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    assert proc.returncode == 0
+    assert maybe_decode(proc.stdout).strip() == 'v13.1.0'
 
 
 def test_update_path_env(tmp_path: Path) -> None:
