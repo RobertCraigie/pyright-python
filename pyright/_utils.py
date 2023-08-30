@@ -23,7 +23,7 @@ DEFAULT_PACKAGE_JSON: dict[str, Any] = {
 }
 
 
-def install_pyright(args: tuple[object], *, quiet: bool | None) -> Path:
+def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     """Internal helper function to install the Pyright npm package to a cache.
 
     This returns the path to the installed package.
@@ -74,7 +74,7 @@ def install_pyright(args: tuple[object], *, quiet: bool | None) -> Path:
 def _should_warn_version(
     version: str,
     *,
-    args: tuple[object],
+    args: tuple[object, ...],
     quiet: bool | None,
 ) -> bool:
     if quiet:
