@@ -98,7 +98,7 @@ If neither of them are set it defaults to `~/.cache`
 
 Set `PYRIGHT_PYTHON_GLOBAL_NODE` to any non-truthy value, i.e. anything apart from 1, t, on, or true.
 e.g. `off`
-You can optionnaly choose the version of node used by setting `PYRIGHT_PYTHON_NODE_VERSION` to the desired version
+You can optionally choose the version of node used by setting `PYRIGHT_PYTHON_NODE_VERSION` to the desired version
 
 ### Modify Node Env Location
 
