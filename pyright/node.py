@@ -72,7 +72,9 @@ def _ensure_node_env(target: Target) -> Path:
 def _get_global_binary(target: Target) -> Optional[Path]:
     log.debug('Checking for global target binary: %s', target)
 
-    which = shutil.which(target)
+    path = target + _postfix_for_target(target)
+
+    which = shutil.which(path)
     if which is not None:
         log.debug('Found global binary at: %s', which)
 
