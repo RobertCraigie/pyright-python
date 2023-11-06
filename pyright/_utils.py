@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 
 import os
 import sys
@@ -9,6 +10,7 @@ from typing import Any
 
 from . import __pyright_version__, node
 from .utils import env_to_bool, get_latest_version, get_cache_dir
+from . import _mureq as mureq
 
 
 ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python'
@@ -21,6 +23,7 @@ DEFAULT_PACKAGE_JSON: dict[str, Any] = {
     'author': 'RobertCraigie',
     'license': 'Apache-2.0',
 }
+log: logging.Logger = logging.getLogger(__name__)
 
 
 def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
@@ -31,11 +34,12 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     This accepts a single argument which corresponds to the arguments given to the CLI / langserver
     which are used to determine whether or not certain warnings / logs will be printed.
     """
-    version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION', __pyright_version__)
+    version = _get_config_version()
     if version == 'latest':
         version = node.latest('pyright')
     else:
         if _should_warn_version(version, args=args, quiet=quiet):
+            # TODO: Decide what this warning should say when PYRIGHT_PYTHON_PYLANCE_VERSION is set
             print(
                 f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
@@ -69,6 +73,39 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
         )
 
     return pkg_dir
+
+
+def _get_config_version() -> str:
+    force_version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    if force_version:
+        return force_version
+
+    pylance_version = os.environ.get('PYRIGHT_PYTHON_PYLANCE_VERSION')
+    if pylance_version:
+        version = _get_pylance_pyright_version(pylance_version)
+        if version:
+            return version
+
+    return __pyright_version__
+
+
+def _get_pylance_pyright_version(pylance_version: str) -> str | None:
+    try:
+        url = f'https://raw.githubusercontent.com/debonte/pylance-release/main/builds/{pylance_version}.json'
+        response = mureq.get(url, timeout=1)
+        response.raise_for_status()
+
+        version = response.json()["pyrightVersion"]
+        print(f'Pylance {pylance_version} uses pyright version {version}')
+        return version
+    except Exception as exc:
+        print(
+            f'WARNING: could not find pyright version for pylance v{pylance_version}.\n'
+            + f'Falling back to the default pyright version (v{__pyright_version__}).\n'
+        )
+
+        log.debug(f"Encountered exception while determining pylance's pyright version: {type(exc)} - {exc}")
+        return
 
 
 def _should_warn_version(
