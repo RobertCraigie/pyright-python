@@ -39,7 +39,6 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
         version = node.latest('pyright')
     else:
         if _should_warn_version(version, args=args, quiet=quiet):
-            # TODO: Decide what this warning should say when PYRIGHT_PYTHON_PYLANCE_VERSION is set
             print(
                 f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
