@@ -34,7 +34,7 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     This accepts a single argument which corresponds to the arguments given to the CLI / langserver
     which are used to determine whether or not certain warnings / logs will be printed.
     """
-    version = _get_config_version()
+    version = _get_configured_pyright_version()
     if version == 'latest':
         version = node.latest('pyright')
     else:
@@ -75,21 +75,19 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     return pkg_dir
 
 
-def _get_config_version() -> str:
+def _get_configured_pyright_version() -> str:
     force_version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
     if force_version:
         return force_version
 
     pylance_version = os.environ.get('PYRIGHT_PYTHON_PYLANCE_VERSION')
     if pylance_version:
-        version = _get_pylance_pyright_version(pylance_version)
-        if version:
-            return version
+        return _get_pylance_pyright_version(pylance_version)
 
     return __pyright_version__
 
 
-def _get_pylance_pyright_version(pylance_version: str) -> str | None:
+def _get_pylance_pyright_version(pylance_version: str) -> str:
     url = f'https://raw.githubusercontent.com/microsoft/pylance-release/main/releases/{pylance_version}.json'
 
     try:
@@ -100,13 +98,8 @@ def _get_pylance_pyright_version(pylance_version: str) -> str | None:
         print(f'Pylance {pylance_version} uses pyright version {version}')
         return version
     except Exception as exc:
-        print(
-            f'WARNING: could not find pyright version for pylance v{pylance_version}.\n'
-            + f'Falling back to the default pyright version (v{__pyright_version__}).\n'
-        )
-
         log.debug(f"Failed to download build metadata for Pylance {pylance_version} from {url}: {type(exc)} - {exc}")
-        return
+        raise
 
 
 def _should_warn_version(
