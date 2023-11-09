@@ -59,6 +59,18 @@ def test_module_invocation_latest_version() -> None:
     assert version.parse(match.group(1)) >= version.parse(__pyright_version__)
 
 
+def test_module_invocation_pylance_version() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='2023.11.11'),
+    )
+    assert proc.returncode == 0
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    assert match.group(1) == '1.1.334'
+
+
 def test_entry_point() -> None:
     proc = subprocess.run(
         ['pyright', '--version'],
