@@ -90,8 +90,9 @@ def _get_config_version() -> str:
 
 
 def _get_pylance_pyright_version(pylance_version: str) -> str | None:
+    url = f'https://raw.githubusercontent.com/microsoft/pylance-release/main/releases/{pylance_version}.json'
+
     try:
-        url = f'https://raw.githubusercontent.com/debonte/pylance-release/main/releases/{pylance_version}.json'
         response = mureq.get(url, timeout=1)
         response.raise_for_status()
 
@@ -104,7 +105,7 @@ def _get_pylance_pyright_version(pylance_version: str) -> str | None:
             + f'Falling back to the default pyright version (v{__pyright_version__}).\n'
         )
 
-        log.debug(f"Encountered exception while determining pylance's pyright version: {type(exc)} - {exc}")
+        log.debug(f"Failed to download build metadata for Pylance {pylance_version} from {url}: {type(exc)} - {exc}")
         return
 
 
