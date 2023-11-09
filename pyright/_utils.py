@@ -91,7 +91,7 @@ def _get_config_version() -> str:
 
 def _get_pylance_pyright_version(pylance_version: str) -> str | None:
     try:
-        url = f'https://raw.githubusercontent.com/debonte/pylance-release/main/builds/{pylance_version}.json'
+        url = f'https://raw.githubusercontent.com/debonte/pylance-release/main/releases/{pylance_version}.json'
         response = mureq.get(url, timeout=1)
         response.raise_for_status()
 
