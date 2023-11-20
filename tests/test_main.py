@@ -71,6 +71,21 @@ def test_module_invocation_pylance_version() -> None:
     assert match.group(1) == '1.1.334'
 
 
+def test_module_invocation_pylance_version_latest_prerelease() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='latest-prerelease'),
+    )
+    assert proc.returncode == 0
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    # Can't predict which version of pyright is currently used by pylance. Just
+    # ensure that the process ran succesfully and some pyright version appeared
+    # in the output.
+    assert len(match.groups()) == 1
+
+
 def test_entry_point() -> None:
     proc = subprocess.run(
         ['pyright', '--version'],
