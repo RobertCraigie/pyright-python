@@ -83,7 +83,7 @@ Set `PYRIGHT_PYTHON_FORCE_VERSION` to the desired version, e.g. `1.1.156`, `late
 
 ### Keeping Pyright and Pylance in sync
 
-Set `PYRIGHT_PYTHON_PYLANCE_VERSION` to your Pylance version, e.g. `2023.11.11`, `latest-release`, `latest-prerelease`. The corresponding Pyright version will be used. Note that `PYRIGHT_PYTHON_FORCE_VERSION` takes precedence over `PYRIGHT_PYTHON_PYLANCE_VERSION`, so you'll want to set one or the other, not both.
+Set `PYRIGHT_PYTHON_PYLANCE_VERSION` to your Pylance version, e.g. `2023.11.11`, `latest-release`, `latest-prerelease`. The corresponding Pyright version will be used. See [Pylance's changelog](https://github.com/microsoft/pylance-release/blob/main/CHANGELOG.md) for details on recent releases. Note that `PYRIGHT_PYTHON_FORCE_VERSION` takes precedence over `PYRIGHT_PYTHON_PYLANCE_VERSION`, so you'll want to set one or the other, not both.
 
 ### Show NPM logs
 
