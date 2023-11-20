@@ -93,8 +93,11 @@ def _get_pylance_pyright_version(pylance_version: str) -> str:
         response = mureq.get(url, timeout=1)
         response.raise_for_status()
 
-        version = response.json()["pyrightVersion"]
-        print(f'Pylance {pylance_version} uses pyright version {version}')
+        data = response.json()
+        log.debug(f'Pylance release data: {data}')
+        version = data["pyrightVersion"]
+
+        log.debug(f'Pylance {pylance_version} uses pyright version {version}')
         return version
     except Exception as exc:
         log.debug(f"Failed to download release metadata for Pylance {pylance_version} from {url}: {type(exc)} - {exc}")
