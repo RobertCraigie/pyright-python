@@ -1,8 +1,8 @@
 name: watch pyright
 on:
   schedule:
-    # At the end of every day
-    - cron: "0 0 * * *"
+    # At 7 am UTC every day
+    - cron: "0 7 * * *"
   workflow_dispatch:
 
 jobs:
