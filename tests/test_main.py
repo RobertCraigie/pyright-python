@@ -146,6 +146,19 @@ def test_explicit_latest_no_new_version_warning() -> None:
     assert 'WARNING: there is a new pyright version available' not in output
 
 
+def test_pylance_version_no_new_version_warning() -> None:
+    """No new version warning is emitted when PYRIGHT_PYTHON_PYLANCE_VERSION is set"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='2023.11.10'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' not in output
+
+
 def test_output_json_no_warning() -> None:
     """If the --outputjson flag is set then no warning is emitted"""
     proc = subprocess.run(

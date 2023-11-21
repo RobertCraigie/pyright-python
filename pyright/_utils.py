@@ -123,6 +123,11 @@ def _should_warn_version(
     if env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
         return False
 
+    # Don't warn about the pyright version if a Pylance version is specified, since the latest
+    # Pylance release may not include the latest pyright release yet.
+    if os.environ.get('PYRIGHT_PYTHON_PYLANCE_VERSION'):
+        return False
+
     # NOTE: there is an edge case here where a new pyright version has been released
     # but we haven't made a new pyright-python release yet and the user has set
     # PYRIGHT_PYTHON_FORCE_VERSION to the new pyright version.
