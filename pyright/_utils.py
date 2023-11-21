@@ -100,7 +100,9 @@ def _get_pylance_pyright_version(pylance_version: str) -> str:
         log.debug(f'Pylance {pylance_version} uses pyright version {version}')
         return version
     except Exception as exc:
-        log.debug(f"Failed to download release metadata for Pylance {pylance_version} from {url}: {type(exc)} - {exc}")
+        log.debug(
+            f"Failed to download release metadata for Pylance {pylance_version} from {url}: {type(exc)} - {exc}"
+        )
         raise
 
 
