@@ -59,6 +59,33 @@ def test_module_invocation_latest_version() -> None:
     assert version.parse(match.group(1)) >= version.parse(__pyright_version__)
 
 
+def test_module_invocation_pylance_version() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='2023.11.11'),
+    )
+    assert proc.returncode == 0
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    assert match.group(1) == '1.1.334'
+
+
+def test_module_invocation_pylance_version_latest_prerelease() -> None:
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='latest-prerelease'),
+    )
+    assert proc.returncode == 0
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    # Can't predict which version of pyright is currently used by pylance. Just
+    # ensure that the process ran succesfully and some pyright version appeared
+    # in the output.
+    assert len(match.groups()) == 1
+
+
 def test_entry_point() -> None:
     proc = subprocess.run(
         ['pyright', '--version'],
@@ -113,6 +140,19 @@ def test_explicit_latest_no_new_version_warning() -> None:
         check=True,
         stdout=subprocess.PIPE,
         env=dict(os.environ, PYRIGHT_PYTHON_FORCE_VERSION='latest'),
+    )
+    assert proc.returncode == 0
+    output = proc.stdout.decode('utf-8')
+    assert 'WARNING: there is a new pyright version available' not in output
+
+
+def test_pylance_version_no_new_version_warning() -> None:
+    """No new version warning is emitted when PYRIGHT_PYTHON_PYLANCE_VERSION is set"""
+    proc = subprocess.run(
+        [sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        env=dict(os.environ, PYRIGHT_PYTHON_PYLANCE_VERSION='2023.11.10'),
     )
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
