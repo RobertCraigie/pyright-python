@@ -1,2 +1,2 @@
-__version__ = '1.1.347'
-__pyright_version__ = '1.1.347'
+__version__ = '1.1.348'
+__pyright_version__ = '1.1.348'
