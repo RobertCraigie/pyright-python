@@ -60,7 +60,7 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
         if not package_json.exists():
             package_json.write_text(json.dumps(DEFAULT_PACKAGE_JSON, indent=2))
 
-        silent = '--outputjson' in args
+        silent = '--outputjson' in args or '--version' in args
         node.run(
             'npm',
             'install',
