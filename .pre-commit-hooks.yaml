@@ -7,3 +7,12 @@
     require_serial: true
     additional_dependencies: []
     minimum_pre_commit_version: '2.9.2'
+-   id: pyright-concise
+    name: pyright-concise
+    description: 'Wrapper that produces more concise output for pyright.'
+    entry: sh -c '! script -c "pyright $*" /dev/null | grep --color=never -Po "(?<=$PWD/)(.*:.*)"' --
+    language: python
+    'types_or': [python, pyi]
+    require_serial: true
+    additional_dependencies: []
+    minimum_pre_commit_version: '2.9.2'
