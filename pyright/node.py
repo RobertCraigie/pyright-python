@@ -9,7 +9,7 @@ import logging
 import platform
 import subprocess
 from functools import lru_cache
-from typing import Dict, Mapping, Tuple, Optional, Union, Any, cast
+from typing import Mapping, Any, cast
 from pathlib import Path
 
 from . import errors
