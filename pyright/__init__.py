@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pyright: reportUnusedImport=false
 
 __title__ = 'pyright'

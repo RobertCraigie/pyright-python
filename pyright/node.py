@@ -69,7 +69,7 @@ def _ensure_node_env(target: Target) -> Path:
     return path
 
 
-def _get_global_binary(target: Target) -> Optional[Path]:
+def _get_global_binary(target: Target) -> Path | None:
     log.debug('Checking for global target binary: %s', target)
 
     path = target + _postfix_for_target(target)
@@ -100,7 +100,7 @@ def _install_node_env() -> None:
 
 def run(
     target: Target, *args: str, **kwargs: Any
-) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
+) -> subprocess.CompletedProcess[bytes] | subprocess.CompletedProcess[str]:
     check_target(target)
     binary = _ensure_available(target)
     env = kwargs.pop('env', None) or os.environ.copy()
@@ -125,7 +125,7 @@ def run(
     )
 
 
-def version(target: Target) -> Tuple[int, ...]:
+def version(target: Target) -> tuple[int, ...]:
     proc = run(target, '--version', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     output = maybe_decode(proc.stdout)
     match = VERSION_RE.search(output)
@@ -171,7 +171,7 @@ def latest(package: str) -> str:
     return value
 
 
-def get_env_variables() -> Dict[str, Any]:
+def get_env_variables() -> dict[str, Any]:
     """Return the environmental variables that should be passed to a binary"""
     # NOTE: I do not actually know if these result in the intended behaviour
     #       I simply copied them from bin/shim in nodeenv

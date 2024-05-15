@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import re
 from setuptools import setup
 
 
-with open('README.md', 'r') as f:
+with open('README.md') as f:
     readme = f.read()
 
 version = ''
@@ -19,7 +18,7 @@ if not version:
     raise RuntimeError('version is not set')
 
 
-with open('requirements.txt', 'r') as f:
+with open('requirements.txt') as f:
     requirements = f.readlines()
 
 
