@@ -67,7 +67,7 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
             f'pyright@{version}',
             cwd=str(cache_dir),
             check=True,
-            stdout=subprocess.PIPE if silent else sys.stdout,
+            stdout=subprocess.PIPE if silent else sys.stderr,
             stderr=subprocess.PIPE if silent else sys.stderr,
         )
 
