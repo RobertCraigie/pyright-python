@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import re
 from setuptools import setup
 
 
-with open('README.md', 'r') as f:
+with open('README.md') as f:
     readme = f.read()
 
 version = ''
@@ -19,7 +18,7 @@ if not version:
     raise RuntimeError('version is not set')
 
 
-with open('requirements.txt', 'r') as f:
+with open('requirements.txt') as f:
     requirements = f.readlines()
 
 
@@ -41,7 +40,7 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     packages=['pyright'],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     package_data={'': ['py.typed']},
     include_package_data=True,
     zip_safe=False,
@@ -66,7 +65,6 @@ setup(
         'Intended Audience :: Developers',
         'Typing :: Typed',
         'Topic :: Software Development :: Libraries :: Python Modules',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
