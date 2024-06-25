@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "pyright/_version.py"
+  workflow_dispatch:
 
 jobs:
   publish_release:
