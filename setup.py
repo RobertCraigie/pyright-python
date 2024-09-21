@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import re
-from setuptools import setup
 
+from setuptools import setup
 
 with open('README.md', 'r') as f:
     readme = f.read()

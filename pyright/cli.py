@@ -1,11 +1,10 @@
 import sys
 import logging
 import subprocess
-from typing import List, NoReturn, Union, Any
+from typing import Any, List, Union, NoReturn
 
 from . import node
 from ._utils import install_pyright
-
 
 __all__ = (
     'run',

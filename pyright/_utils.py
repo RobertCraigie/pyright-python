@@ -1,17 +1,16 @@
 from __future__ import annotations
-import logging
 
 import os
 import sys
 import json
+import logging
 import subprocess
-from pathlib import Path
 from typing import Any
+from pathlib import Path
 
-from . import __pyright_version__, node
-from .utils import env_to_bool, get_latest_version, get_cache_dir
-from . import _mureq as mureq
-
+from . import node, _mureq as mureq
+from .utils import env_to_bool, get_cache_dir, get_latest_version
+from ._version import __pyright_version__
 
 ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python'
 DEFAULT_PACKAGE_JSON: dict[str, Any] = {

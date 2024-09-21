@@ -1,6 +1,6 @@
 import sys
 from enum import Enum
-from typing import NamedTuple, Any
+from typing import Any, NamedTuple
 from pathlib import Path
 
 if sys.version_info >= (3, 8):

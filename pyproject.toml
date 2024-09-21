@@ -4,6 +4,38 @@ output-format = "grouped"
 target-version = "py37"
 extend-exclude = ["pyright/_mureq.py"]
 
+[tool.ruff.lint]
+select = [
+  # isort
+  "I",
+  # bugbear rules
+  "B",
+  # remove unused imports
+  "F401",
+  # bare except statements
+  "E722",
+  # unused arguments
+  "ARG",
+  # typing.TYPE_CHECKING misuse
+  "TCH004",
+  "TCH005",
+  # import rules
+  "TID251",
+]
+ignore = [
+  # mutable defaults
+  "B006",
+  # function calls in defaults
+  "B008",
+]
+
+
+[tool.ruff.lint.isort]
+length-sort = true
+length-sort-straight = true
+combine-as-imports = true
+extra-standard-library = ["typing_extensions"]
+
 [tool.ruff.format]
 quote-style = "single"
 docstring-code-format = true

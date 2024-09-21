@@ -1,4 +1,5 @@
 import pytest
+
 from pyright.types import check_target
 
 

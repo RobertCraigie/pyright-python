@@ -8,14 +8,13 @@ import shutil
 import logging
 import platform
 import subprocess
-from functools import lru_cache
-from typing import Dict, Mapping, Tuple, Optional, Union, Any, cast
+from typing import Any, Dict, Tuple, Union, Mapping, Optional, cast
 from pathlib import Path
+from functools import lru_cache
 
 from . import errors
 from .types import Binary, Target, Strategy, check_target
-from .utils import get_env_dir, env_to_bool, get_bin_dir, maybe_decode
-
+from .utils import env_to_bool, get_bin_dir, get_env_dir, maybe_decode
 
 log: logging.Logger = logging.getLogger(__name__)
 
