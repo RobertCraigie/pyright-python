@@ -44,8 +44,7 @@ def _postfix_for_target(target: Target) -> str:
 def _ensure_node_env(target: Target) -> Path:
     log.debug('Checking for nodeenv %s binary', target)
 
-    path = BINARIES_DIR.joinpath(target + _postfix_for_target(target))
-
+    path = _get_nodeenv_path(target)
     log.debug('Using %s path for binary', path)
 
     if path.exists() and not NODE_VERSION:
@@ -57,6 +56,10 @@ def _ensure_node_env(target: Target) -> Path:
     if not path.exists():
         raise errors.BinaryNotFound(path=path, target=target)
     return path
+
+
+def _get_nodeenv_path(target: Target) -> Path:
+    return BINARIES_DIR.joinpath(target + _postfix_for_target(target))
 
 
 def _get_global_binary(target: Target) -> Optional[Path]:
@@ -85,7 +88,13 @@ def _install_node_env() -> None:
         args += ['--node', NODE_VERSION, '--force']
     args.append(str(ENV_DIR))
     log.debug('Running command with args: %s', args)
-    subprocess.run(args, check=True)
+
+    try:
+        subprocess.run(args, check=True)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(
+            'nodeenv failed; for more reliable node.js binaries try `pip install pyright[nodejs]`'
+        ) from exc
 
 
 class GlobalStrategy(NamedTuple):

@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from typing import TYPE_CHECKING, Tuple
 from pathlib import Path
@@ -88,6 +89,27 @@ def test_node_version_env() -> None:
     )
     assert proc.returncode == 0
     assert maybe_decode(proc.stdout).strip() == 'v13.1.0'
+
+
+@mock.patch('pyright.node.USE_GLOBAL_NODE', False)
+@mock.patch('pyright.node.USE_NODEJS_WHEEL', False)
+@mock.patch('pyright.node.NODE_VERSION', None)
+@mock.patch('pyright.node.BINARIES_DIR', pyright.node.BINARIES_DIR.joinpath('empty'))
+def test_nodeenv_flaky_error(fake_process: FakeProcess) -> None:
+    """A helpful error is raised when nodeenv fails."""
+    fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
+        [sys.executable, '-m', 'nodeenv', str(pyright.node.ENV_DIR)],
+        stdout='this thing is flaky',
+        returncode=1,
+    )
+
+    with pytest.raises(RuntimeError, match=r'install pyright\[nodejs\]'):
+        pyright.node.run(
+            'node',
+            '--version',
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
 
 
 def test_update_path_env(tmp_path: Path) -> None:
