@@ -143,3 +143,20 @@ jobs:
         # --cache-from=type=gha --cache-to=type=gha,mode=max
         run: |
           docker build --% -f tests/windows.Dockerfile -t pyright-python .
+
+  tests_status:
+    if: always()
+
+    needs:
+      - test
+      - lint
+      - docker
+      - docker-windows
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
