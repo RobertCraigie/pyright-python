@@ -1,6 +1,7 @@
+import re
 import argparse
 import fileinput
-import re
+
 from packaging import version
 
 

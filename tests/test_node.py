@@ -1,15 +1,15 @@
 import os
 import subprocess
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 from pathlib import Path
 from unittest import mock
+
 import pytest
 from pytest_subprocess import FakeProcess
 
 import pyright
 from pyright import node
 from pyright.utils import maybe_decode
-
 
 if TYPE_CHECKING:
     from _pytest.capture import CaptureFixture

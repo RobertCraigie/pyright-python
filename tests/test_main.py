@@ -6,16 +6,15 @@ import sys
 import json
 import platform
 import subprocess
-from pathlib import Path
-from packaging import version
 from typing import TYPE_CHECKING
+from pathlib import Path
+
+from packaging import version
 
 import pyright
 from pyright import __pyright_version__
-from pyright.utils import maybe_decode
-from pyright import __pyright_version__
-
 from tests.utils import assert_matches
+from pyright.utils import maybe_decode
 
 if TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch

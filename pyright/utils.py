@@ -2,9 +2,9 @@ import os
 import sys
 import logging
 import platform
+from typing import Union, Optional
 from pathlib import Path
 from functools import lru_cache
-from typing import Union, Optional
 
 from . import _mureq as mureq
 
