@@ -2,3 +2,8 @@ tox
 twine<=5.0.0
 wheel
 ruff==0.6.6
+pytest==7.4.0
+coverage==5.3.1
+pytest-subprocess==1.5.0
+
+-e .[all]
