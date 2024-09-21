@@ -68,7 +68,7 @@ def get_latest_version() -> Optional[str]:
     """
     try:
         response = mureq.get(PYPI_API_URL, timeout=1)
-        version = response.json()["info"]["version"]
+        version = response.json()['info']['version']
     except Exception as exc:
         log.debug(
             'Encountered exception while fetching latest release: %s - %s',

@@ -6,9 +6,7 @@ from packaging import version
 
 def get_pyright_version() -> str:
     with open('pyright/_version.py') as f:
-        match = re.search(
-            r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE
-        )
+        match = re.search(r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
         if not match:
             raise RuntimeError('version is not set')
 
@@ -40,22 +38,20 @@ def set_pyright_ver(ver: str):
             print(line)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # create a parser object
-    parser = argparse.ArgumentParser(description="Version management")
+    parser = argparse.ArgumentParser(description='Version management')
 
     # add argument
+    parser.add_argument('--get', '-g', action='store_true', help='Get current pyright version')
     parser.add_argument(
-        "--get", "-g", action='store_true', help="Get current pyright version"
-    )
-    parser.add_argument(
-        "--compare",
-        "-c",
+        '--compare',
+        '-c',
         type=str,
         nargs=1,
-        help="Compare pyright version. Exits with status code 1 if version is newer than current",
+        help='Compare pyright version. Exits with status code 1 if version is newer than current',
     )
-    parser.add_argument("--set", "-s", type=str, nargs=1, help="Set pyright version")
+    parser.add_argument('--set', '-s', type=str, nargs=1, help='Set pyright version')
 
     # parse the arguments from standard input
     args = parser.parse_args()

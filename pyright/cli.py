@@ -19,9 +19,7 @@ def main(args: List[str], **kwargs: Any) -> int:
     return run(*args, **kwargs).returncode
 
 
-def run(
-    *args: str, **kwargs: Any
-) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
+def run(*args: str, **kwargs: Any) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     pkg_dir = install_pyright(args, quiet=None)
     script = pkg_dir / 'index.js'
     if not script.exists():

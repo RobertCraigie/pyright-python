@@ -10,8 +10,7 @@ def main(*args: str) -> None:
     output = subprocess.check_output([node, '--version']).decode('utf-8')
     if not output.startswith(expected_version):
         raise RuntimeError(
-            f'Expected node version to start with: {expected_version} but got '
-            + f'version: {output} instead.'
+            f'Expected node version to start with: {expected_version} but got ' + f'version: {output} instead.'
         )
 
 
