@@ -91,8 +91,8 @@ def _install_node_env() -> None:
     log.debug('Installing nodeenv to %s', ENV_DIR)
     args = [sys.executable, '-m', 'nodeenv']
     if NODE_VERSION:
-        log.debug(f"Using user specified node version: {NODE_VERSION}")
-        args += ["--node", NODE_VERSION, "--force"]
+        log.debug(f'Using user specified node version: {NODE_VERSION}')
+        args += ['--node', NODE_VERSION, '--force']
     args.append(str(ENV_DIR))
     log.debug('Running command with args: %s', args)
     subprocess.run(args, check=True)
@@ -131,9 +131,7 @@ def version(target: Target) -> Tuple[int, ...]:
     match = VERSION_RE.search(output)
     if not match:
         print(output, file=sys.stderr)
-        raise errors.VersionCheckFailed(
-            f'Could not find version from `{target} --version`, see output above'
-        )
+        raise errors.VersionCheckFailed(f'Could not find version from `{target} --version`, see output above')
 
     info = tuple(int(value) for value in match.group(0).split('.'))
     log.debug('Version check for %s returning %s', target, info)
@@ -155,16 +153,12 @@ def latest(package: str) -> str:
 
     if proc.returncode != 0:
         print(stdout, file=sys.stderr)
-        raise errors.VersionCheckFailed(
-            f'Version check for {package} failed, see output above.'
-        )
+        raise errors.VersionCheckFailed(f'Version check for {package} failed, see output above.')
 
     match = VERSION_RE.search(stdout)
     if not match:
         print(stdout, file=sys.stderr)
-        raise errors.VersionCheckFailed(
-            f'Could not find version for {package}, see output above'
-        )
+        raise errors.VersionCheckFailed(f'Could not find version for {package}, see output above')
 
     value = match.group(0)
     log.debug('Version check for %s returning %s', package, value)
@@ -194,9 +188,7 @@ def get_pkg_version(pkg: Path) -> str | None:
         data = json.loads(pkg.read_text())
     except Exception:
         # TODO: test this
-        log.debug(
-            'Ignoring error while reading/parsing the %s file', pkg, exc_info=True
-        )
+        log.debug('Ignoring error while reading/parsing the %s file', pkg, exc_info=True)
         return None
 
     return data.get('version')

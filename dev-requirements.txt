@@ -1,3 +1,4 @@
 tox
 twine<=5.0.0
 wheel
+ruff==0.6.6

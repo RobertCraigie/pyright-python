@@ -38,7 +38,7 @@ def test_target_version(
     version: Tuple[int, ...],
 ) -> None:
     fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
-        [npx, "--version"], stdout=output
+        [npx, '--version'], stdout=output
     )
     assert node.version('npx') == version
 
@@ -49,7 +49,7 @@ def test_target_version_not_found(
     capsys: 'CaptureFixture[str]',
 ) -> None:
     fake_process.register_subprocess(  # pyright: ignore[reportUnknownMemberType]
-        [npx, "--version"], stdout='hello world'
+        [npx, '--version'], stdout='hello world'
     )
 
     with pytest.raises(pyright.errors.VersionCheckFailed) as exc:
@@ -63,7 +63,7 @@ def test_target_version_not_found(
 
 def test_run_env_argument(tmp_path: Path) -> None:
     """Ensure the `run()` function can accept an `env` argument."""
-    tmp_path.joinpath('test.js').write_text("console.log(process.env.MY_ENV_VAR)")
+    tmp_path.joinpath('test.js').write_text('console.log(process.env.MY_ENV_VAR)')
     proc = node.run(
         'node',
         'test.js',
@@ -75,7 +75,7 @@ def test_run_env_argument(tmp_path: Path) -> None:
     assert maybe_decode(proc.stdout) == 'hello!\n'
 
 
-@mock.patch('pyright.node.NODE_VERSION', "13.1.0")
+@mock.patch('pyright.node.NODE_VERSION', '13.1.0')
 @mock.patch('pyright.node.USE_GLOBAL_NODE', False)
 def test_node_version_env() -> None:
     """Ensure the custom version is respected."""

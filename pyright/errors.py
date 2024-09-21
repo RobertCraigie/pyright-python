@@ -17,9 +17,7 @@ class NodeError(PyrightError):
 
 class BinaryNotFound(NodeError):
     def __init__(self, target: Target, path: Path) -> None:
-        super().__init__(
-            f'Expected {target} binary to exist at {path} but was not found.'
-        )
+        super().__init__(f'Expected {target} binary to exist at {path} but was not found.')
         self.path = path
         self.target = target
 

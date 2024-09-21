@@ -1,7 +1,12 @@
-[tool.black]
-skip-string-normalization = true
-extend-exclude = '_mureq.py'
+[tool.ruff]
+line-length = 120
+output-format = "grouped"
+target-version = "py37"
+extend-exclude = ["pyright/_mureq.py"]
 
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
 
 [tool.pyright]
 include = [
