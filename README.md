@@ -16,6 +16,15 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pyright
 pip install pyright
 ```
 
+> [!TIP]
+> It's highly recommended to install `pyright` with the `nodejs` extra which uses [`nodejs-wheel`](https://pypi.org/project/nodejs-wheel-binaries/) to
+> download Node.js binaries as it is more reliable than the default [`nodeenv`](https://pypi.org/project/nodeenv/) solution.
+>
+> ```bash
+> pip install pyright[nodejs]
+> ```
+
+
 ## Usage
 
 Pyright can be invoked using two different methods

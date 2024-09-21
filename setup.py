@@ -26,7 +26,8 @@ with open('requirements.txt', 'r') as f:
 extras = {
     'dev': [
         'twine>=3.4.1',
-    ]
+    ],
+    'nodejs': ['nodejs-wheel-binaries'],
 }
 
 setup(

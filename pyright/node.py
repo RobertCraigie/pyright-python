@@ -8,12 +8,14 @@ import shutil
 import logging
 import platform
 import subprocess
-from typing import Any, Dict, Tuple, Union, Mapping, Optional, cast
+import importlib.util
+from typing import Any, Dict, Tuple, Union, Mapping, Optional, NamedTuple, cast
 from pathlib import Path
 from functools import lru_cache
+from typing_extensions import Literal, assert_never
 
 from . import errors
-from .types import Binary, Target, Strategy, check_target
+from .types import Target, check_target
 from .utils import env_to_bool, get_bin_dir, get_env_dir, maybe_decode
 
 log: logging.Logger = logging.getLogger(__name__)
@@ -21,20 +23,9 @@ log: logging.Logger = logging.getLogger(__name__)
 ENV_DIR: Path = get_env_dir()
 BINARIES_DIR: Path = get_bin_dir(env_dir=ENV_DIR)
 USE_GLOBAL_NODE = env_to_bool('PYRIGHT_PYTHON_GLOBAL_NODE', default=True)
+USE_NODEJS_WHEEL = env_to_bool('PYRIGHT_PYTHON_NODEJS_WHEEL', default=True)
 NODE_VERSION = os.environ.get('PYRIGHT_PYTHON_NODE_VERSION', default=None)
 VERSION_RE = re.compile(r'\d+\.\d+\.\d+')
-
-
-def _ensure_available(target: Target) -> Binary:
-    """Ensure the target node executable is available"""
-    path = None
-    if USE_GLOBAL_NODE:
-        path = _get_global_binary(target)
-
-    if path is not None:
-        return Binary(path=path, strategy=Strategy.GLOBAL)
-
-    return Binary(path=_ensure_node_env(target), strategy=Strategy.NODEENV)
 
 
 def _is_windows() -> bool:
@@ -97,31 +88,83 @@ def _install_node_env() -> None:
     subprocess.run(args, check=True)
 
 
+class GlobalStrategy(NamedTuple):
+    type: Literal['global']
+    path: Path
+
+
+class NodeJSWheelStrategy(NamedTuple):
+    type: Literal['nodejs_wheel']
+
+
+class NodeenvStrategy(NamedTuple):
+    type: Literal['nodeenv']
+    path: Path
+
+
+Strategy = Union[GlobalStrategy, NodeJSWheelStrategy, NodeenvStrategy]
+
+
+def _resolve_strategy(target: Target) -> Strategy:
+    if USE_NODEJS_WHEEL:
+        if importlib.util.find_spec('nodejs_wheel') is not None:
+            log.debug('Using nodejs_wheel package for resolving binaries')
+            return NodeJSWheelStrategy(type='nodejs_wheel')
+
+    if USE_GLOBAL_NODE:
+        path = _get_global_binary(target)
+        if path is not None:
+            log.debug('Using global %s binary', target)
+            return GlobalStrategy(type='global', path=path)
+
+    log.debug('Installing binaries using nodeenv')
+    return NodeenvStrategy(type='nodeenv', path=_ensure_node_env(target))
+
+
 def run(
     target: Target, *args: str, **kwargs: Any
 ) -> Union['subprocess.CompletedProcess[bytes]', 'subprocess.CompletedProcess[str]']:
     check_target(target)
-    binary = _ensure_available(target)
-    env = kwargs.pop('env', None) or os.environ.copy()
 
-    if binary.strategy == Strategy.NODEENV:
+    strategy = _resolve_strategy(target)
+    if strategy.type == 'global':
+        node_args = [str(strategy.path), *args]
+        log.debug('Running global node command with args: %s', node_args)
+        return cast(
+            'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
+            subprocess.run(node_args, **kwargs),
+        )
+    elif strategy.type == 'nodejs_wheel':
+        import nodejs_wheel
+
+        if target == 'node':
+            return cast(
+                'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
+                nodejs_wheel.node(args, return_completed_process=True, **kwargs),
+            )
+        elif target == 'npm':
+            return cast(
+                'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
+                nodejs_wheel.npm(args, return_completed_process=True, **kwargs),
+            )
+        else:
+            assert_never(target)
+    elif strategy.type == 'nodeenv':
+        env = kwargs.pop('env', None) or os.environ.copy()
         env.update(get_env_variables())
 
         # If we're using `nodeenv` to resolve the node binary then we also need
         # to ensure that `node` is in the PATH so that any install scripts that
         # assume it is present will work.
-        env.update(PATH=_update_path_env(env=env, target_bin=binary.path.parent))
-        node_args = [str(binary.path), *args]
-    elif binary.strategy == Strategy.GLOBAL:
-        node_args = [str(binary.path), *args]
+        env.update(PATH=_update_path_env(env=env, target_bin=strategy.path.parent))
+        node_args = [str(strategy.path), *args]
+        log.debug('Running nodeenv command with args: %s', node_args)
+        return cast(
+            'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
+            subprocess.run(node_args, **kwargs),
+        )
     else:
-        raise RuntimeError(f'Unknown strategy: {binary.strategy}')
-
-    log.debug('Running node command with args: %s', node_args)
-    return cast(
-        'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
-        subprocess.run(node_args, env=env, **kwargs),
-    )
+        assert_never(strategy)
 
 
 def version(target: Target) -> Tuple[int, ...]:

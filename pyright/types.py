@@ -1,22 +1,12 @@
+from __future__ import annotations
+
 import sys
-from enum import Enum
-from typing import Any, NamedTuple
-from pathlib import Path
+from typing import Any
 
 if sys.version_info >= (3, 8):
     from typing import Literal
 else:
     from typing_extensions import Literal
-
-
-class Strategy(int, Enum):
-    GLOBAL = 0
-    NODEENV = 1
-
-
-class Binary(NamedTuple):
-    path: Path
-    strategy: Strategy
 
 
 # we have to define twice to support runtime type checking

@@ -3,8 +3,7 @@ from typing import Iterator
 from pathlib import Path
 
 import pytest
-
-from pyright import node
+import nodejs_wheel
 
 
 @pytest.fixture(name='tmp_path')
@@ -20,9 +19,10 @@ def tmp_path_fixture(tmp_path: Path) -> Iterator[Path]:
 
 @pytest.fixture(name='node', scope='session')
 def node_fixture() -> str:
-    return str(
-        node._ensure_available('node').path  # pyright: ignore[reportPrivateUsage]
-    )
+    if os.name == 'nt':
+        return str(Path(nodejs_wheel.__file__).parent / 'node.exe')
+
+    return str(Path(nodejs_wheel.__file__).parent / 'bin' / 'node')
 
 
 @pytest.fixture(autouse=True)
