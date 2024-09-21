@@ -1,12 +1,8 @@
-import sys
 from enum import Enum
 from typing import NamedTuple, Any
 from pathlib import Path
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+from typing import Literal
 
 
 class Strategy(int, Enum):
