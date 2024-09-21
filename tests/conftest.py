@@ -18,10 +18,10 @@ def tmp_path_fixture(tmp_path: Path) -> Iterator[Path]:
         os.chdir(cwd)
 
 
-@pytest.fixture(name='npx', scope='session')
-def npx_fixture() -> str:
+@pytest.fixture(name='node', scope='session')
+def node_fixture() -> str:
     return str(
-        node._ensure_available('npx').path  # pyright: ignore[reportPrivateUsage]
+        node._ensure_available('node').path  # pyright: ignore[reportPrivateUsage]
     )
 
 

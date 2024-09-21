@@ -21,8 +21,8 @@ class Binary(NamedTuple):
 
 # we have to define twice to support runtime type checking
 # on python < 3.7 as typing.get_args is not available
-Target = Literal['node', 'npm', 'npx']
-_TARGETS = {'node', 'npm', 'npx'}
+Target = Literal['node', 'npm']
+_TARGETS = {'node', 'npm'}
 
 
 def check_target(value: Any) -> None:
