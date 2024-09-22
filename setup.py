@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 import re
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', 'r') as f:
     readme = f.read()
 
 version = ''
-with open('pyright/_version.py') as f:
+with open('src/pyright/_version.py') as f:
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
     if not match:
         raise RuntimeError('version is not set')
@@ -41,9 +41,13 @@ setup(
     install_requires=requirements,
     long_description=readme,
     long_description_content_type='text/markdown',
-    packages=['pyright'],
-    python_requires='>=3.7',
+    packages=find_packages(
+        where='src',
+        include=['pyright', 'pyright.*'],
+    ),
+    package_dir={'': 'src'},
     package_data={'': ['py.typed']},
+    python_requires='>=3.7',
     include_package_data=True,
     zip_safe=False,
     entry_points={

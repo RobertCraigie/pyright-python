@@ -6,7 +6,7 @@ from packaging import version
 
 
 def get_pyright_version() -> str:
-    with open('pyright/_version.py') as f:
+    with open('src/pyright/_version.py') as f:
         match = re.search(r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
         if not match:
             raise RuntimeError('version is not set')
@@ -19,7 +19,7 @@ def compare(ver: str) -> bool:
 
 
 def set_pyright_ver(ver: str):
-    with fileinput.input('pyright/_version.py', inplace=True) as f:
+    with fileinput.input('src/pyright/_version.py', inplace=True) as f:
         for line in f:
             line = re.sub(
                 r'^__pyright_version__\s*=\s*[\'"]([^\'"]*)[\'"]',
