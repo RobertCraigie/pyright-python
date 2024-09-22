@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def main() -> None:
-    path = Path(__file__).parent.parent.parent / 'pyright' / '_version.py'
+    path = Path(__file__).parent.parent.parent / 'src' / 'pyright' / '_version.py'
     contents = path.read_text()
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', contents, re.MULTILINE)
     if match is None:
