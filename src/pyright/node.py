@@ -170,7 +170,7 @@ def run(
         log.debug('Running nodeenv command with args: %s', node_args)
         return cast(
             'subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]',
-            subprocess.run(node_args, **kwargs),
+            subprocess.run(node_args, env=env, **kwargs),
         )
     else:
         assert_never(strategy)
