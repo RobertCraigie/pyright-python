@@ -144,8 +144,8 @@ jobs:
         run: |
           docker build --% -f tests/windows.Dockerfile -t pyright-python .
 
-  docker-2:
-    name: docker 2
+  docker-minimal:
+    name: docker (minimal)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -153,7 +153,10 @@ jobs:
       - name: Docker Build
         run: |
           REF=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          docker run python:3.11.4 /bin/sh -c "pip install git+https://github.com/RobertCraigie/pyright-python.git@$REF; pyright --version"
+          docker run python:3.11.4 /bin/sh -c "
+            pip install git+https://github.com/RobertCraigie/pyright-python.git@$REF && \
+            pyright --version
+          "
 
   tests_status:
     if: always()
