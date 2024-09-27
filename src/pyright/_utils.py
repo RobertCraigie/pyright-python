@@ -116,9 +116,6 @@ def _should_warn_version(
         # If this flag is set then the output must be machine parseable
         return False
 
-    if os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION'):
-        return False
-
     if env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
         return False
 
@@ -126,6 +123,10 @@ def _should_warn_version(
     # Pylance release may not include the latest pyright release yet.
     if os.environ.get('PYRIGHT_PYTHON_PYLANCE_VERSION'):
         return False
+
+    force_version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    if force_version and force_version != __pyright_version__:
+        return True
 
     # NOTE: there is an edge case here where a new pyright version has been released
     # but we haven't made a new pyright-python release yet and the user has set

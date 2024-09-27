@@ -57,7 +57,7 @@ def test_force_version_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr('pyright._utils.get_latest_version', lambda: '1.0.1')
     monkeypatch.setattr('pyright._utils.__version__', '1.0.0')
     monkeypatch.setenv('PYRIGHT_PYTHON_FORCE_VERSION', '0.9.9')
-    assert not _should_warn_version(args=(), quiet=None)
+    assert _should_warn_version(args=(), quiet=None)
 
 
 def test_version_comparison(monkeypatch: pytest.MonkeyPatch) -> None:
