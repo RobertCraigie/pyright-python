@@ -116,6 +116,9 @@ def _should_warn_version(
         # If this flag is set then the output must be machine parseable
         return False
 
+    if os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION'):
+        return False
+
     if env_to_bool('PYRIGHT_PYTHON_IGNORE_WARNINGS', default=False):
         return False
 
