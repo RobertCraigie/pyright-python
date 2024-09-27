@@ -10,7 +10,7 @@ from pathlib import Path
 
 from . import node, _mureq as mureq
 from .utils import env_to_bool, get_cache_dir, get_latest_version
-from ._version import __pyright_version__
+from ._version import __version__, __pyright_version__
 
 ROOT_CACHE_DIR = get_cache_dir() / 'pyright-python'
 DEFAULT_PACKAGE_JSON: dict[str, Any] = {
@@ -37,7 +37,7 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     if version == 'latest':
         version = node.latest('pyright')
     else:
-        if _should_warn_version(version, args=args, quiet=quiet):
+        if _should_warn_version(args=args, quiet=quiet):
             print(
                 f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
@@ -104,7 +104,6 @@ def _get_pylance_pyright_version(pylance_version: str) -> str:
 
 
 def _should_warn_version(
-    version: str,
     *,
     args: tuple[object, ...],
     quiet: bool | None,
@@ -125,6 +124,10 @@ def _should_warn_version(
     if os.environ.get('PYRIGHT_PYTHON_PYLANCE_VERSION'):
         return False
 
+    force_version = os.environ.get('PYRIGHT_PYTHON_FORCE_VERSION')
+    if force_version and force_version != __pyright_version__:
+        return True
+
     # NOTE: there is an edge case here where a new pyright version has been released
     # but we haven't made a new pyright-python release yet and the user has set
     # PYRIGHT_PYTHON_FORCE_VERSION to the new pyright version.
@@ -132,4 +135,4 @@ def _should_warn_version(
     # pyright does. Also in order to correctly compare versions we would need an additional
     # dependency. As such this is an acceptable bug.
     latest = get_latest_version()
-    return latest is not None and latest != version
+    return latest is not None and latest != __version__
