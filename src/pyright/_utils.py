@@ -43,6 +43,12 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
+    if version == __pyright_version__:
+        bundled_path = Path(__file__).parent.joinpath('dist')
+        if bundled_path.exists():
+            log.debug('using bundled pyright at %s', bundled_path)
+            return bundled_path
+
     cache_dir = ROOT_CACHE_DIR / version
     cache_dir.mkdir(exist_ok=True, parents=True)
 

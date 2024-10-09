@@ -13,8 +13,9 @@ from packaging import version
 
 import pyright
 from pyright import __pyright_version__
-from tests.utils import assert_matches
+from tests.utils import assert_matches, is_relative_to
 from pyright.utils import maybe_decode
+from pyright._utils import install_pyright
 
 if TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch
@@ -238,3 +239,8 @@ def test_package_json_in_parent_dir(tmp_path: Path, monkeypatch: MonkeyPatch) ->
         check=True,
     )
     assert proc.returncode == 0
+
+
+def test_install_pyright_uses_bundled_by_default() -> None:
+    install_path = install_pyright(tuple(), quiet=None)
+    assert is_relative_to(install_path, Path(pyright.__file__).parent)

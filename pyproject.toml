@@ -46,7 +46,8 @@ include = [
     "tests",
 ]
 exclude = [
-    "src/pyright/_mureq.py"
+    "src/pyright/_mureq.py",
+    "src/pyright/dist",
 ]
 pythonVersion = "3.9"
 
