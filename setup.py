@@ -46,7 +46,7 @@ setup(
         include=['pyright', 'pyright.*'],
     ),
     package_dir={'': 'src'},
-    package_data={'': ['py.typed']},
+    package_data={'': ['py.typed', 'dist/**']},
     python_requires='>=3.7',
     include_package_data=True,
     zip_safe=False,
