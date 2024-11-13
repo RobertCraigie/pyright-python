@@ -48,7 +48,7 @@ You can also setup pyright to run automatically before each commit by setting up
 ```yaml
 repos:
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.388
+    rev: v1.1.389
     hooks:
     - id: pyright
 ```
