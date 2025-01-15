@@ -25,7 +25,12 @@ jobs:
       matrix:
         os: [ubuntu-22.04, macos-14, windows-latest]
         node: [14, 16, 18]
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+        exclude:
+          - os: macos-14
+            node: 14
+          - os: macos-14
+            python-version: "3.7"
 
     steps:
       - uses: actions/checkout@v3
