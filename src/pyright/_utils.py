@@ -43,7 +43,7 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
                 + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
             )
 
-    if version == __pyright_version__:
+    if version == __pyright_version__ and env_to_bool('PYRIGHT_PYTHON_USE_BUNDLED_PYRIGHT', default=True):
         bundled_path = Path(__file__).parent.joinpath('dist')
         if bundled_path.exists():
             log.debug('using bundled pyright at %s', bundled_path)
