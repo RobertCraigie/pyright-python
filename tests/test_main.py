@@ -18,7 +18,7 @@ from pyright.utils import maybe_decode
 from pyright._utils import install_pyright
 
 if TYPE_CHECKING:
-    from _pytest.monkeypatch import MonkeyPatch
+    from _pytest.monkeypatch import MonkeyPatch  # pyright: ignore[reportPrivateImportUsage]
 
 
 VERSION_REGEX = re.compile(r'pyright (?P<version>\d+\.\d+\.\d+)')

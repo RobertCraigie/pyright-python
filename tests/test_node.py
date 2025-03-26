@@ -13,7 +13,7 @@ import pyright.node
 from pyright.utils import maybe_decode
 
 if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
+    from _pytest.capture import CaptureFixture  # pyright: ignore[reportPrivateImportUsage]
 
 
 # TODO: test binary resolution
