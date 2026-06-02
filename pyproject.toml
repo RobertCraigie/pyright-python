@@ -2,7 +2,7 @@
 line-length = 120
 output-format = "grouped"
 target-version = "py37"
-extend-exclude = ["src/pyright/_mureq.py"]
+extend-exclude = []
 
 [tool.ruff.lint]
 select = [
@@ -46,7 +46,6 @@ include = [
     "tests",
 ]
 exclude = [
-    "src/pyright/_mureq.py",
     "src/pyright/dist",
 ]
 pythonVersion = "3.9"

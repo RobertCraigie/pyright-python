@@ -1,12 +1,12 @@
 import os
 import sys
+import json
 import logging
 import platform
 from typing import Union, Optional
 from pathlib import Path
 from functools import lru_cache
-
-from . import _mureq as mureq
+from urllib.request import Request, urlopen
 
 PYPI_API_URL: str = 'https://pypi.org/pypi/pyright/json'
 log: logging.Logger = logging.getLogger(__name__)
@@ -67,8 +67,8 @@ def get_latest_version() -> Optional[str]:
     None is returned.
     """
     try:
-        response = mureq.get(PYPI_API_URL, timeout=1)
-        version = response.json()['info']['version']
+        with urlopen(Request(PYPI_API_URL), timeout=1) as response:
+            version = json.loads(response.read())['info']['version']
     except Exception as exc:
         log.debug(
             'Encountered exception while fetching latest release: %s - %s',

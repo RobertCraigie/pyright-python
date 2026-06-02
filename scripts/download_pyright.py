@@ -4,9 +4,10 @@ import json
 import shutil
 import tarfile
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 import pyright
-from pyright import _mureq, __pyright_version__
+from pyright import __pyright_version__
 
 DIST_DIR = Path(pyright.__file__).parent / 'dist'
 
@@ -36,17 +37,16 @@ def download_tarball(*, version: str) -> None:
     if DIST_DIR.exists():
         shutil.rmtree(DIST_DIR)
 
-    rsp = _mureq.get(f'https://registry.npmjs.org/pyright/{version}')
-    rsp.raise_for_status()
+    with urlopen(Request(f'https://registry.npmjs.org/pyright/{version}')) as rsp:
+        info = json.loads(rsp.read())
 
-    info = rsp.json()
     tar_url = info['dist']['tarball']
     print(f'downloading tar from {tar_url}')
 
-    rsp = _mureq.get(tar_url)
-    rsp.raise_for_status()
+    with urlopen(Request(tar_url)) as rsp:
+        tar_bytes = rsp.read()
 
-    with tarfile.open(fileobj=io.BytesIO(rsp.body)) as tar:
+    with tarfile.open(fileobj=io.BytesIO(tar_bytes)) as tar:
         members = tar.getmembers()
 
         # npm tarballs will always output one `package/` directory which is
