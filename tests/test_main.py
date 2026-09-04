@@ -9,6 +9,7 @@ import subprocess
 from typing import TYPE_CHECKING
 from pathlib import Path
 
+import pytest
 from packaging import version
 
 import pyright
@@ -173,7 +174,6 @@ def test_output_json_no_warning() -> None:
 
 
 def test_ignore_warnings_config_no_warning() -> None:
-    """If the --outputjson flag is set then no warning is emitted"""
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],
         check=True,
@@ -187,6 +187,28 @@ def test_ignore_warnings_config_no_warning() -> None:
     assert proc.returncode == 0
     output = proc.stdout.decode('utf-8')
     assert 'WARNING: there is a new pyright version available' not in output
+
+
+@pytest.mark.xfail(
+    condition=sys.platform != 'linux',
+    reason='Network namespace isolation requires Linux',
+)
+def test_offline_mode_ok() -> None:
+    is_root = os.geteuid() == 0
+    user_ns = () if is_root else ('--user', '--map-root-user')
+    proc = subprocess.run(
+        ['unshare', *user_ns, '--net', sys.executable, '-m', 'pyright', '--version'],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=dict(
+            os.environ,
+            PYRIGHT_PYTHON_OFFLINE='1',
+        ),
+    )
+    assert not proc.stderr
+    match = assert_matches(VERSION_REGEX, proc.stdout.decode('utf-8'))
+    assert match.group(1) == __pyright_version__
 
 
 def test_nodeenv() -> None:
