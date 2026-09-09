@@ -30,6 +30,7 @@ jobs:
           python version.py --set ${{ env.PYRIGHT_VERSION }}
 
       - name: Create Pull Request
+        id: create-pr
         if: ${{ env.PYRIGHT_OUT_OF_DATE == '1' }}
         uses: peter-evans/create-pull-request@v3
         env:
@@ -48,3 +49,10 @@ jobs:
           labels: |
             automated pr
           draft: false
+
+      - name: Enable auto-merge
+        if: ${{ env.PYRIGHT_OUT_OF_DATE == '1' && steps.create-pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
+        run: |
+          gh pr merge --auto --squash "${{ steps.create-pr.outputs.pull-request-number }}"
