@@ -78,6 +78,9 @@ By default Pyright for Python is set to target a specific pyright version and ne
 
 If you would rather not have to update your installation every time a new pyright release is created then you can automatically use the latest available pyright version by setting the environment variable `PYRIGHT_PYTHON_FORCE_VERSION` to `latest`.
 
+To force the use of bundled pyright version and skip the automatic version check at start-up,
+set the environment variable `PYRIGHT_PYTHON_OFFLINE` to a truthy value, e.g. 1, t, on, or true.
+
 ## Configuration
 
 You can configure Pyright for Python using environment variables.
