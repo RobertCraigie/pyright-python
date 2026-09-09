@@ -7,8 +7,9 @@ import logging
 import subprocess
 from typing import Any
 from pathlib import Path
+from urllib.request import Request, urlopen
 
-from . import node, _mureq as mureq
+from . import node
 from .utils import env_to_bool, get_cache_dir, get_latest_version
 from ._version import __version__, __pyright_version__
 
@@ -95,10 +96,9 @@ def _get_pylance_pyright_version(pylance_version: str) -> str:
     url = f'https://raw.githubusercontent.com/microsoft/pylance-release/main/releases/{pylance_version}.json'
 
     try:
-        response = mureq.get(url, timeout=1)
-        response.raise_for_status()
+        with urlopen(Request(url), timeout=1) as response:
+            data = json.loads(response.read())
 
-        data = response.json()
         log.debug(f'Pylance release data: {data}')
         version = data['pyrightVersion']
 
