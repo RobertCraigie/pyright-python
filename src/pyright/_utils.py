@@ -95,7 +95,7 @@ def _get_pylance_pyright_version(pylance_version: str) -> str:
     url = f'https://raw.githubusercontent.com/microsoft/pylance-release/main/releases/{pylance_version}.json'
 
     try:
-        response = mureq.get(url, timeout=1)
+        response = mureq.get(url, timeout=10)
         response.raise_for_status()
 
         data = response.json()
