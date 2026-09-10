@@ -9,6 +9,7 @@ import subprocess
 from typing import TYPE_CHECKING
 from pathlib import Path
 
+import pytest
 from packaging import version
 
 import pyright
@@ -23,6 +24,8 @@ if TYPE_CHECKING:
 
 VERSION_REGEX = re.compile(r'pyright (?P<version>\d+\.\d+\.\d+)')
 
+network = pytest.mark.flaky(reruns=2, reruns_delay=2)
+
 
 def test_module_invocation() -> None:
     proc = subprocess.run(
@@ -35,6 +38,7 @@ def test_module_invocation() -> None:
     assert match.group(1) == __pyright_version__
 
 
+@network
 def test_module_invocation_version() -> None:
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],
@@ -47,6 +51,7 @@ def test_module_invocation_version() -> None:
     assert match.group(1) == '1.1.223'
 
 
+@network
 def test_module_invocation_latest_version() -> None:
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],
@@ -59,6 +64,7 @@ def test_module_invocation_latest_version() -> None:
     assert version.parse(match.group(1)) >= version.parse(__pyright_version__)
 
 
+@network
 def test_module_invocation_pylance_version() -> None:
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],
@@ -71,6 +77,7 @@ def test_module_invocation_pylance_version() -> None:
     assert match.group(1) == '1.1.334'
 
 
+@network
 def test_module_invocation_pylance_version_latest_prerelease() -> None:
     proc = subprocess.run(
         [sys.executable, '-m', 'pyright', '--version'],
@@ -120,6 +127,7 @@ def test_argument_separator(tmp_path: Path) -> None:
     assert 'does not exist' not in output
 
 
+@network
 def test_explicit_version_new_version_warning() -> None:
     """A new version is available warning is emitted explicitly using an older version"""
     proc = subprocess.run(
@@ -133,6 +141,7 @@ def test_explicit_version_new_version_warning() -> None:
     assert 'WARNING: there is a new pyright version available' in output
 
 
+@network
 def test_explicit_latest_no_new_version_warning() -> None:
     """No new version warning is emitted when explicitly setting to `latest`"""
     proc = subprocess.run(
@@ -146,6 +155,7 @@ def test_explicit_latest_no_new_version_warning() -> None:
     assert 'WARNING: there is a new pyright version available' not in output
 
 
+@network
 def test_pylance_version_no_new_version_warning() -> None:
     """No new version warning is emitted when PYRIGHT_PYTHON_PYLANCE_VERSION is set"""
     proc = subprocess.run(
@@ -159,6 +169,7 @@ def test_pylance_version_no_new_version_warning() -> None:
     assert 'WARNING: there is a new pyright version available' not in output
 
 
+@network
 def test_output_json_no_warning() -> None:
     """If the --outputjson flag is set then no warning is emitted"""
     proc = subprocess.run(
@@ -172,6 +183,7 @@ def test_output_json_no_warning() -> None:
     assert 'WARNING: there is a new pyright version available' not in output
 
 
+@network
 def test_ignore_warnings_config_no_warning() -> None:
     """If the --outputjson flag is set then no warning is emitted"""
     proc = subprocess.run(
@@ -189,6 +201,7 @@ def test_ignore_warnings_config_no_warning() -> None:
     assert 'WARNING: there is a new pyright version available' not in output
 
 
+@network
 def test_nodeenv() -> None:
     """Ensure nodeenv is successfully downloaded and used"""
     subprocess.run(
