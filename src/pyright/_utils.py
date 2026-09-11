@@ -34,16 +34,26 @@ def install_pyright(args: tuple[object, ...], *, quiet: bool | None) -> Path:
     which are used to determine whether or not certain warnings / logs will be printed.
     """
     version = _get_configured_pyright_version()
-    if version == 'latest':
-        version = node.latest('pyright')
-    else:
-        if _should_warn_version(args=args, quiet=quiet):
-            print(
-                f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
-                + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
-            )
 
-    if version == __pyright_version__ and env_to_bool('PYRIGHT_PYTHON_USE_BUNDLED_PYRIGHT', default=True):
+    use_bundled = env_to_bool('PYRIGHT_PYTHON_USE_BUNDLED_PYRIGHT', default=True)
+    offline_mode = env_to_bool('PYRIGHT_PYTHON_OFFLINE', default=False)
+    if offline_mode:
+        if version != __pyright_version__ or not use_bundled:
+            print(
+                f'Offline mode: unable to use a pyright version other than the bundled one ({__pyright_version__}).\n'
+                + 'Please remove incompatible PYRIGHT_PYTHON_* environment variables',
+                file=sys.stderr,
+            )
+            sys.exit(1)
+    elif version == 'latest':
+        version = node.latest('pyright')
+    elif _should_warn_version(args=args, quiet=quiet):
+        print(
+            f'WARNING: there is a new pyright version available (v{version} -> v{get_latest_version()}).\n'
+            + 'Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`\n'
+        )
+
+    if version == __pyright_version__ and use_bundled:
         bundled_path = Path(__file__).parent.joinpath('dist')
         if bundled_path.exists():
             log.debug('using bundled pyright at %s', bundled_path)
