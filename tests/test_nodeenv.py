@@ -1,6 +1,7 @@
 import sys
 import subprocess
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 from pytest_subprocess import FakeProcess
@@ -103,6 +104,17 @@ def test_uncertain_node_version_is_reinstalled(
 
     assert pyright.node._ensure_node_env('node') == Path(node)
     assert fake_process.call_count(install) == 1  # pyright: ignore[reportUnknownMemberType]
+
+
+@pytest.mark.usefixtures('nodeenv_dir')
+def test_node_probe_has_a_bounded_timeout(fake_process: FakeProcess) -> None:
+    node = str(pyright.node._get_nodeenv_path('node'))
+    fake_process.register([node, '--version'], stdout=b'v23.1.0\n')  # pyright: ignore[reportUnknownMemberType]
+
+    with patch.object(pyright.node.subprocess, 'run', wraps=subprocess.run) as probe:
+        assert pyright.node._ensure_node_env('node') == Path(node)
+
+    assert 0 < probe.call_args[1]['timeout'] <= 5
 
 
 @pytest.mark.parametrize('error', [OSError('not executable'), subprocess.TimeoutExpired('node', 5)])
