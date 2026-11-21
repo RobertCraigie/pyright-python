@@ -64,6 +64,38 @@ venvPath = "."
 venv = ".venv"
 ```
 
+#### Pre-commit CI
+
+To run Pre-commit on [Pre-commit CI](https://pre-commit.ci/) you must install `pyright[nodejs]` as a dependency.
+You can do this in your virtual environment, e.g. via requirements.txt, if the environment is available in the CI and configured [as above](#Pre-commit).
+
+You may need different environments for CI and local instances, for example if your virtual environment is not available on CI, or `pyright[nodejs]` is not available locally.
+You can create a CI specific hook which installs the required dependencies, and a local hook which is skipped on CI.
+
+```yaml
+ci:
+  skip: [pyrightLocal]
+
+repos:
+- repo: https://github.com/RobertCraigie/pyright-python
+  rev: v1.1.394
+  hooks:
+  - id: pyright
+    alias: pyrightLocal
+    name: Check types with pyright (local)
+
+- repo: https://github.com/RobertCraigie/pyright-python
+  rev: v1.1.394
+  hooks:
+  - id: pyright
+    alias: pyrightCI
+    name: Check types with pyright (CI)
+    # Setup your virtual environment for CI
+    # Either place pyright[nodejs] in requirements.txt or use it just for CI
+    additional_dependencies: ["-rrequirements.txt", "pyright[nodejs]"]
+    stages: [manual]  # Only run from CI
+```
+
 ## Motivation
 
 [Pyright](https://github.com/microsoft/pyright) is written in TypeScript, requiring node to be installed, and is normally installed with npm. This could be an entry barrier for some Python developers as they may not have node or npm installed on their machine; I wanted to make pyright as easy to install as any normal Python package.
