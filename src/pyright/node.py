@@ -47,7 +47,7 @@ def _ensure_node_env(target: Target) -> Path:
     path = _get_nodeenv_path(target)
     log.debug('Using %s path for binary', path)
 
-    if path.exists() and not NODE_VERSION:
+    if path.exists() and (not NODE_VERSION or _nodeenv_matches_version(NODE_VERSION)):
         log.debug('Binary at %s exists, skipping nodeenv installation', path)
     else:
         log.debug('Installing nodeenv as a binary at %s could not be found', path)
@@ -56,6 +56,26 @@ def _ensure_node_env(target: Target) -> Path:
     if not path.exists():
         raise errors.BinaryNotFound(path=path, target=target)
     return path
+
+
+def _nodeenv_matches_version(version: str) -> bool:
+    match = re.fullmatch(r'v?([0-9]+\.[0-9]+\.[0-9]+)', version)
+    if match is None:
+        return False
+
+    try:
+        result = subprocess.run(
+            [str(_get_nodeenv_path('node')), '--version'],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
+        )
+        output = maybe_decode(result.stdout).strip()
+    except (OSError, subprocess.SubprocessError, UnicodeError):
+        return False
+
+    return output in (match.group(1), 'v' + match.group(1))
 
 
 def _get_nodeenv_path(target: Target) -> Path:
